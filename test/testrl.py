@@ -1,8 +1,11 @@
 import gym
+import time
 
-env = gym.make('CartPole-v0')
+env = gym.make('MsPacman-v0')
 env.reset()
-for _ in range(10000):
+for _ in range(100):
     env.render()
     env.step(env.action_space.sample()) #take random action
+
+    time.sleep(.050)
 env.close()

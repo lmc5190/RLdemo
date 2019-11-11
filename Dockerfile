@@ -11,7 +11,10 @@ RUN apt-get update -y && \
     add-apt-repository -y ppa:openjdk-r/ppa && \
     apt-get install -y openjdk-8-jdk && \
     pip install minerl && \
-    pip install -U matplotlib
+
+#install plot tools and open ai gym dependencies
+RUN pip install -U matplotlib && \
+    pip install gym[atari] && \
 
 
 #install xorg and xvfb for rendering in headless server, install x11vnc to view rendering.
