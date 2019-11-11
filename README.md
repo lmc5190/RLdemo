@@ -84,7 +84,7 @@ Do the next few steps *within the container*, which requires dependencies built 
 - Set the display to port 5920. `export DISPLAY=:20`
 - Run the following code to kickoff the virtural monitor
 ```
-Xvfb :20 -screen 0 1280x1024x24 &
+Xvfb :20 -screen 0 1400x900x24 &
 x11vnc -passwd TestVNC -display :20 -N -forever &
 ```
 - *On the client* run your VNC Client and connect to ServerIPAddress:5920
