@@ -15,7 +15,7 @@ def MCLearning(env, discount, alpha,  min_alpha,  epsilon, min_eps, episodes, ep
     num_states = np.round(num_states, 0).astype(int) + 1
     
     # Initialize Q table
-    Q = np.random.uniform(low = 9, high = 10, 
+    Q = np.random.uniform(low = 100000, high = 200000, 
                           size = (num_states[0], num_states[1], 
                                   env.action_space.n))
     
@@ -73,9 +73,11 @@ def MCLearning(env, discount, alpha,  min_alpha,  epsilon, min_eps, episodes, ep
                 G = 0
                 while len(reward_stack) > 0:
                     G = reward_stack.pop() + discount*G
+                    #print(G)
                     s1, s2 = state_stack.pop()
                     a = action_stack.pop() 
-                    Q[s1,s2,a] = Q[s1,s2,a] + alpha*(G - Q[s1,s2,a])   
+                    Q[s1,s2,a] = Q[s1,s2,a] + alpha*(G - Q[s1,s2,a])
+                    print(Q[s1,s2,a])
                 
             # Adjust Q value for current state
             else:
@@ -108,7 +110,7 @@ def MCLearning(env, discount, alpha,  min_alpha,  epsilon, min_eps, episodes, ep
     return ave_reward_list
 
 # Run MC Learning algorithm
-rewards = MCLearning(env, 0.9, 0.3, 0.001, 1.0, 0.005,10000, 5000)
+rewards = MCLearning(env, 0.9, 0.1, 0.001, 0.8, 0.005,10000, 5000)
 #def MCLearning(env, discount, alpha,  min_alpha, epsilon, min_eps, episodes, episodes_stop_exploring):
 
 # Plot Rewards
