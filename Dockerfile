@@ -15,6 +15,7 @@ RUN apt-get update -y && \
 #install plot tools and open ai gym dependencies
 RUN pip install -U matplotlib && \
     pip install gym[atari] && \
+    pip install gym-minigrid && \
 
 
 #install xorg and xvfb for rendering in headless server, install x11vnc to view rendering.

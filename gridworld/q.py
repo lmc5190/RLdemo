@@ -1,11 +1,11 @@
 import gym
+import gym_gridworlds
 
-env = gym.make('Pendulum-v0')
+env = gym.make('Gridworld-v0')
 for i_episode in range(20):
-    observation = env.reset()
+    #observation = env.reset()
     for t in range(100):
-        env.render()
-        print(observation)
+        #env.render()
         action = env.action_space.sample()
         observation, reward, done, info = env.step(action)
         if done:
