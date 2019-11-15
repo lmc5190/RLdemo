@@ -8,7 +8,7 @@ env = gym.make('MountainCar-v0')
 env.reset()
 
 # Define Q-learning function
-def QLearning(env, learning, discount, epsilon, min_eps, episodes):
+def QLearning(env, alpha, discount, epsilon, min_eps, min_alpha, episodes, episodes_stop_exploring):
     # Determine size of discretized state space
     num_states = (env.observation_space.high - env.observation_space.low)*\
                     np.array([10, 100])
@@ -22,9 +22,10 @@ def QLearning(env, learning, discount, epsilon, min_eps, episodes):
     # Initialize variables to track rewards
     reward_list = []
     ave_reward_list = []
-    
-    # Calculate episodic reduction in epsilon
-    reduction = (epsilon - min_eps)/episodes
+
+    #compute alpha and epsilon decay
+    decay_epsilon = (epsilon - min_eps)/episodes_stop_exploring
+    decay_alpha = (alpha - min_alpha)/episodes
     
     # Run Q learning algorithm
     for i in range(episodes):
@@ -62,7 +63,7 @@ def QLearning(env, learning, discount, epsilon, min_eps, episodes):
                 
             # Adjust Q value for current state
             else:
-                delta = learning*(reward + 
+                delta = alpha*(reward + 
                                  discount*np.max(Q[state2_adj[0], 
                                                    state2_adj[1]]) - 
                                  Q[state_adj[0], state_adj[1],action])
@@ -74,8 +75,12 @@ def QLearning(env, learning, discount, epsilon, min_eps, episodes):
         
         # Decay epsilon
         if epsilon > min_eps:
-            epsilon -= reduction
-        
+            epsilon -= decay_epsilon
+
+        # Decay alpha
+        if alpha > min_alpha:
+            alpha -= decay_alpha
+
         # Track rewards
         reward_list.append(tot_reward)
         
@@ -85,19 +90,20 @@ def QLearning(env, learning, discount, epsilon, min_eps, episodes):
             reward_list = []
             
         if (i+1) % 100 == 0:    
-            print('Episode {} Average Reward: {}'.format(i+1, ave_reward))
+            print('Episode {} Average Reward: {} Alpha: {} Epsilon {}'.format(i+1, ave_reward, alpha, epsilon))
             
     env.close()
     
     return ave_reward_list
 
 # Run Q-learning algorithm
-rewards = QLearning(env, 0.2, 0.9, 0.8, 0, 5000)
-
+rewards = QLearning(env, 0.1, 0.1, 0.15, 0.005, 0.001,10000, 5000)
+#def QLearning(env, alpha, discount, epsilon, min_eps, min_alpha, episodes, episodes_stop_exploring):
 # Plot Rewards
 plt.plot(100*(np.arange(len(rewards)) + 1), rewards)
 plt.xlabel('Episodes')
 plt.ylabel('Average Reward')
 plt.title('Average Reward vs Episodes')
-plt.savefig('rewards.jpg')     
+plt.show()
+plt.savefig('q_rewards.png')     
 plt.close()  
