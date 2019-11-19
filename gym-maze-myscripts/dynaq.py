@@ -31,7 +31,7 @@ def simulate():
 
         for t in range(T):
             
-            time.sleep(0.02)
+            #time.sleep(0.02)
 
             # Select an action
             action = select_action(state_0, explore_rate)
@@ -47,8 +47,11 @@ def simulate():
             max_q = np.amax(q_table[state])
             q_table[state_0 + (action,)] += alpha * (reward + discount * max_q - q_table[state_0 + (action,)])
             env_model.append([state_0, action, reward, state])
-            
-            #Do Planning 
+
+            #Do Planning
+            for n in range(planning_steps):
+                s,a,r,sp = random.choice(env_model)
+                q_table[s + (a,)] += alpha * (r + discount * np.amax(q_table[sp]) - q_table[s + (a,)])
 
             # Setting up for the next iteration
             state_0 = state
@@ -145,8 +148,8 @@ if __name__ == "__main__":
 
     # Initialize the "maze" environment, see __init__.py for more env names
     #env = gym.make("maze-random-5x5-v0")
-    env=gym.make("maze-sample-5x5-v0")
-    #env=gym.make("maze-sample-10x10-v0")
+    #env=gym.make("maze-sample-5x5-v0")
+    env=gym.make("maze-sample-10x10-v0")
     #env=gym.make("maze-sample-100x100-v0")
     '''
     Defining the environment related constants

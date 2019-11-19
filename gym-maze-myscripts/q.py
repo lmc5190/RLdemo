@@ -31,7 +31,7 @@ def simulate():
 
         for t in range(T):
             
-            time.sleep(0.02)
+            #time.sleep(0.02)
 
             # Select an action
             action = select_action(state_0, explore_rate)
@@ -142,8 +142,8 @@ if __name__ == "__main__":
 
     # Initialize the "maze" environment, see __init__.py for more env names
     #env = gym.make("maze-random-5x5-v0")
-    env=gym.make("maze-sample-5x5-v0")
-    #env=gym.make("maze-sample-10x10-v0")
+    #env=gym.make("maze-sample-5x5-v0")
+    env=gym.make("maze-sample-10x10-v0")
     #env=gym.make("maze-sample-100x100-v0")
     '''
     Defining the environment related constants
