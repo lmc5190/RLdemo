@@ -77,7 +77,7 @@ def MCLearning(env, discount, alpha,  min_alpha,  epsilon, min_eps, episodes, ep
                     s1, s2 = state_stack.pop()
                     a = action_stack.pop() 
                     Q[s1,s2,a] = Q[s1,s2,a] + alpha*(G - Q[s1,s2,a])
-                    print(Q[s1,s2,a])
+                    #print(Q[s1,s2,a])
                 
             # Adjust Q value for current state
             else:

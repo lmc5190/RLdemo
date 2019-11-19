@@ -8,7 +8,7 @@ env = gym.make('MountainCar-v0')
 env.reset()
 
 # Define Q-learning function
-def QLearning(env, discount, alpha,  min_alpha,  epsilon, min_eps, episodes, episodes_stop_exploring):
+def QLearning(env, discount, alpha,  min_alpha,  epsilon, min_epsilon, episodes, episodes_stop_exploring):
     # Determine size of discretized state space
     num_states = (env.observation_space.high - env.observation_space.low)*\
                     np.array([10, 100])
@@ -24,7 +24,7 @@ def QLearning(env, discount, alpha,  min_alpha,  epsilon, min_eps, episodes, epi
     ave_reward_list = []
 
     #compute alpha and epsilon decay
-    decay_epsilon = (epsilon - min_eps)/episodes_stop_exploring
+    decay_epsilon = (epsilon - min_epsilon)/episodes_stop_exploring
     decay_alpha = (alpha - min_alpha)/episodes
     
     # Run Q learning algorithm
@@ -74,7 +74,7 @@ def QLearning(env, discount, alpha,  min_alpha,  epsilon, min_eps, episodes, epi
             state_adj = state2_adj
         
         # Decay epsilon
-        if epsilon > min_eps:
+        if epsilon > min_epsilon:
             epsilon -= decay_epsilon
 
         # Decay alpha
@@ -98,7 +98,7 @@ def QLearning(env, discount, alpha,  min_alpha,  epsilon, min_eps, episodes, epi
 
 # Run Q-learning algorithm
 rewards = QLearning(env, 0.9, 0.1, 0.001, 0.15, 0.005,10000, 5000)
-#def QLearning(env, discount, alpha,  min_alpha, epsilon, min_eps, episodes, episodes_stop_exploring):
+#def QLearning(env, discount, alpha,  min_alpha, epsilon, min_epsilon, episodes, episodes_stop_exploring):
 
 # Plot Rewards
 plt.plot(100*(np.arange(len(rewards)) + 1), rewards)
