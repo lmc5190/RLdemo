@@ -41,6 +41,7 @@ def QLearning(env, discount, alpha,  min_alpha,  epsilon, min_epsilon, episodes,
         while done != True:   
             # Render environment for last five episodes
             if i >= (episodes - 5):
+            #if (i <= 3) or (i >= 2000 and i <= 2003): 
                 env.render()
                 time.sleep(0.050)
                 
