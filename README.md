@@ -90,4 +90,14 @@ x11vnc -passwd TestVNC -display :20 -N -forever &
 - *On the client* run your VNC Client and connect to ServerIPAddress:5920
 - Type in the password you set (above we used TestVNC as the pw)
 - *In the container* Run your script normally `python yourscript.py`.
+
+
 You should shortly see Minecraft rendering in your VNC Viewer :)
+
+# Demo Environment
+## gym-maze
+To setup, run the following commands
+```
+cd gym-maze
+python setup.py install
+```
