@@ -16,61 +16,61 @@ def simulate():
     explore_rate = get_explore_rate(0)
     discount = 0.99
     num_streaks = 0
-    gamma_vector = [discount**(i+1) for i in range(n-1)] #static
+    gamma_stack = [discount**(i+1) for i in range(n)]
 
     # Render tha maze
     env.render()
 
     for episode in range(episodes):
 
-        # Reset the environment
+        # Reset the environment, will not start at Terminal State
         state = env.reset()
 
-        # the initial state
-        state_0 = state_to_bucket(state)
+        # the initial state and action
+        state = state_to_bucket(state)
+        action = select_action(state, explore_rate)
         total_reward = 0
 
         #initialize deques
-        S = deque(state_0)
+        S = deque(state)
         A = deque()
         R = deque()
 
         #let terminal time be infinite to start
         T = float(inf)
         t=0
+        done = False
 
-        for t < T+n-1:
+        while t < T+n-1:
             
             #time.sleep(0.02)
 
-            if ((t < T-1) and (done == False)):
-
-                # Select an action
-                action = select_action(state_0, explore_rate)
-
+            if t < T:
                 # execute the action
                 state, reward, done, _ = env.step(action)
-                
-                #Record terminal time when you find it
-                if(done): T=t+1
 
                 # Observe the result
                 state = state_to_bucket(state)
                 total_reward += reward
-
-                # append values to deques
+                
+                #Append values to deques
                 A.append(action)
                 R.append(reward)
-                S.append(state) # S will always be 1 element longer than A
+                S.append(state)
+                
+                #Record terminal time when you find it, otherwise select next action
+                if(done): T=t+1 else: A.append(select_action(state,explore_rate))
             
             # tau indexes time idx for state and actions to be updated
-            tau=t-n-1
+            tau=t-n+1
 
+            # Update Q, note how unneeded values are removed with popleft()
             if(tau >= 0):
                 s, a = S[0],A[0]
-                qsa_n = q_table[S[len(S)-1-1],(A[len(A)-1],)]
-                q_table[s+(a,)] += alpha*(R.popleft() + np.dot(gamma_vector,R) + gamma**(n-1)*qsa_n - \
-                                    q_table[S.popleft(), (A.popleft())]
+                G = R.popleft() + np.dot(gamma_vector,R) + gamma**(n-1)*q_table[S[len(S)-1],(A[len(A)-1],)]
+                q_table[s+(a,)] += alpha*(G - q_table[S.popleft(), (A.popleft())]
+            if(tau + n > T):
+                gamma_stack.pop() # must shrink appropriately with R deque when agent stops interacting with env
             
             #step t forward one step
             t=t+1
@@ -204,6 +204,5 @@ if __name__ == "__main__":
     Creating a Q-Table for each state-action pair and environment model table
     '''
     q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
-    env_model = []
 
     simulate()
