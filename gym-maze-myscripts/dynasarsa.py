@@ -170,7 +170,7 @@ if __name__ == "__main__":
     min_epsilon = 0.001
     min_alpha = 0.2
     decay_factor = np.prod(n_states_tuple, dtype=float) / 10.0
-    planning_steps = 40
+    planning_steps = 10
 
     '''
     Defining the simulation related constants

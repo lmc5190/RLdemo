@@ -4,6 +4,7 @@ import math
 import random
 import time
 import matplotlib.pyplot as plt
+from collections import deque
 
 import gym
 import gym_maze
@@ -14,8 +15,8 @@ def simulate():
     alpha = get_alpha(0)
     explore_rate = get_explore_rate(0)
     discount = 0.99
-
     num_streaks = 0
+    gamma_vector = [discount**(i+1) for i in range(n-1)] #static
 
     # Render tha maze
     env.render()
@@ -29,32 +30,50 @@ def simulate():
         state_0 = state_to_bucket(state)
         total_reward = 0
 
-        for t in range(T):
+        #initialize deques
+        S = deque(state_0)
+        A = deque()
+        R = deque()
+
+        #let terminal time be infinite to start
+        T = float(inf)
+        t=0
+
+        for t < T+n-1:
             
             #time.sleep(0.02)
 
-            # Select an action
-            action = select_action(state_0, explore_rate)
+            if ((t < T-1) and (done == False)):
 
-            # execute the action
-            state, reward, done, _ = env.step(action)
+                # Select an action
+                action = select_action(state_0, explore_rate)
 
-            # Observe the result
-            state = state_to_bucket(state)
-            total_reward += reward
+                # execute the action
+                state, reward, done, _ = env.step(action)
+                
+                #Record terminal time when you find it
+                if(done): T=t+1
 
-            # Update the Q and env_model based on the result
-            max_q = np.amax(q_table[state])
-            q_table[state_0 + (action,)] += alpha * (reward + discount * max_q - q_table[state_0 + (action,)])
-            env_model.append([state_0, action, reward, state])
+                # Observe the result
+                state = state_to_bucket(state)
+                total_reward += reward
 
-            #Do Planning
-            for n in range(planning_steps):
-                s,a,r,sp = random.choice(env_model)
-                q_table[s + (a,)] += alpha * (r + discount * np.amax(q_table[sp]) - q_table[s + (a,)])
+                # append values to deques
+                A.append(action)
+                R.append(reward)
+                S.append(state) # S will always be 1 element longer than A
+            
+            # tau indexes time idx for state and actions to be updated
+            tau=t-n-1
 
-            # Setting up for the next iteration
-            state_0 = state
+            if(tau >= 0):
+                s, a = S[0],A[0]
+                qsa_n = q_table[S[len(S)-1-1],(A[len(A)-1],)]
+                q_table[s+(a,)] += alpha*(R.popleft() + np.dot(gamma_vector,R) + gamma**(n-1)*qsa_n - \
+                                    q_table[S.popleft(), (A.popleft())]
+            
+            #step t forward one step
+            t=t+1
 
             # Print data
             if DEBUG_MODE == 2:
@@ -148,8 +167,8 @@ if __name__ == "__main__":
 
     # Initialize the "maze" environment, see __init__.py for more env names
     #env = gym.make("maze-random-5x5-v0")
-    #env=gym.make("maze-sample-5x5-v0")
-    env=gym.make("maze-sample-10x10-v0")
+    env=gym.make("maze-sample-5x5-v0")
+    #env=gym.make("maze-sample-10x10-v0")
     #env=gym.make("maze-sample-100x100-v0")
     '''
     Defining the environment related constants
@@ -168,7 +187,7 @@ if __name__ == "__main__":
     min_epsilon = 0.001
     min_alpha = 0.2
     decay_factor = np.prod(n_states_tuple, dtype=float) / 10.0
-    planning_steps = 40
+    n = 10 #n-step sarsa
 
     '''
     Defining the simulation related constants
