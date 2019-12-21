@@ -16,7 +16,6 @@ def simulate():
     explore_rate = get_explore_rate(0)
     discount = 0.99
     num_streaks = 0
-    gamma_stack = [discount**(i+1) for i in range(n)]
 
     # Render tha maze
     env.render()
@@ -32,46 +31,65 @@ def simulate():
         total_reward = 0
 
         #initialize deques
-        S = deque(state)
+        S = deque()
         A = deque()
         R = deque()
+        A.append(action)
+        S.append(state)
 
-        #let terminal time be infinite to start
-        T = float(inf)
+        #intialize times
+        T = float("inf")
+        tau = float("-inf") #tau is timestep which for the updated action value's state and action
         t=0
         done = False
 
-        while t < T+n-1:
-            
+        while tau < T:
+            tau=t-n+1
+            print("t equals ", t)
+            print("tau equals ", tau)
             #time.sleep(0.02)
 
             if t < T:
                 # execute the action
+                #important note: after this step, the agent is at time t+1 while the time loop is still at t
                 state, reward, done, _ = env.step(action)
 
                 # Observe the result
                 state = state_to_bucket(state)
                 total_reward += reward
                 
-                #Append values to deques
-                A.append(action)
+                #Append reward (R_t) to deque
                 R.append(reward)
+
+                #append S_t+1 and select/append next action A_t+1
                 S.append(state)
-                
                 #Record terminal time when you find it, otherwise select next action
-                if(done): T=t+1 else: A.append(select_action(state,explore_rate))
-            
-            # tau indexes time idx for state and actions to be updated
-            tau=t-n+1
+                if done:
+                    T=t+1
+                    print("terimnal t is ", T) 
+                else:
+                    action = select_action(state,explore_rate)
+                    A.append(action)
+
 
             # Update Q, note how unneeded values are removed with popleft()
+            #important note: n step algorithms use [n -1] Rewards and bootstrap for state and action value at timestep tau+n
             if(tau >= 0):
-                s, a = S[0],A[0]
-                G = R.popleft() + np.dot(gamma_vector,R) + gamma**(n-1)*q_table[S[len(S)-1],(A[len(A)-1],)]
-                q_table[s+(a,)] += alpha*(G - q_table[S.popleft(), (A.popleft())]
-            if(tau + n > T):
-                gamma_stack.pop() # must shrink appropriately with R deque when agent stops interacting with env
-            
+                print("length of S is ", len(S))
+                print("length of A is ", len(A))
+                s,a = S[0], A[0]
+
+                #build appropriately size gamma vector, esp needed when episode terminates with t < n
+                gamma_vector = [discount**(i+1) for i in range(len(R) - 1)]
+
+                if(tau+n < T):
+                    G = R.popleft() + np.dot(gamma_vector,R) + discount**(n-1)*q_table[S[len(S)-1] + (A[len(A)-1],)]
+                elif(tau < T- 1):
+                    G = R.popleft() + np.dot(gamma_vector,R)
+                else:
+                    G= R.popleft()
+                q_table[s + (a,)] += alpha*(G - q_table[S.popleft() + (A.popleft(),)])
+               
             #step t forward one step
             t=t+1
 
@@ -105,7 +123,7 @@ def simulate():
             if env.is_game_over():
                 sys.exit()
 
-            if done:
+            if t >= T+n-1:
                 print("Episode %d finished after %f time steps with total reward = %f (streak %d)."
                       % (episode, t, total_reward, num_streaks))
 
@@ -166,9 +184,10 @@ def state_to_bucket(state):
 if __name__ == "__main__":
 
     # Initialize the "maze" environment, see __init__.py for more env names
+    #env = gym.make("maze-sample-3x3-v0")
     #env = gym.make("maze-random-5x5-v0")
-    env=gym.make("maze-sample-5x5-v0")
-    #env=gym.make("maze-sample-10x10-v0")
+    #env=gym.make("maze-sample-5x5-v0")
+    env=gym.make("maze-sample-10x10-v0")
     #env=gym.make("maze-sample-100x100-v0")
     '''
     Defining the environment related constants
