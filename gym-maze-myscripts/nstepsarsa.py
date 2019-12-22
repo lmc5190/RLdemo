@@ -83,7 +83,7 @@ def simulate():
                 gamma_vector = [discount**(i+1) for i in range(len(R) - 1)]
 
                 if(tau+n < T):
-                    G = R.popleft() + np.dot(gamma_vector,R) + discount**(n-1)*q_table[S[len(S)-1] + (A[len(A)-1],)]
+                    G = R.popleft() + np.dot(gamma_vector,R) + discount**(n-1)*q_table[S[len(S)-2] + (A[len(A)-2],)]
                 elif(tau < T- 1):
                     G = R.popleft() + np.dot(gamma_vector,R)
                 else:
