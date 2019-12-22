@@ -4,12 +4,12 @@ import math
 import random
 import time
 import matplotlib.pyplot as plt
-from collections import deque
+import pandas as pd
 
 import gym
 import gym_maze
 
-def simulate():
+def dynasarsa(planning_steps):
 
     # Instantiating the learning related parameters
     alpha = get_alpha(0)
@@ -22,94 +22,41 @@ def simulate():
 
     for episode in range(episodes):
 
-        # Reset the environment, will not start at Terminal State
+        # Reset the environment
         state = env.reset()
 
-        # the initial state and action
-        state = state_to_bucket(state)
-        action = select_action(state, explore_rate)
+        # the initial state
+        state_0 = state_to_bucket(state)
         total_reward = 0
 
-        #initialize deques
-        S = deque()
-        A = deque()
-        R = deque()
-        A.append(action)
-        S.append(state)
-
-        #intialize times
-        T = float("inf")
-        tau = float("-inf") #tau is timestep which for the updated action value's state and action
-        t=0
-        done = False
-
-        while tau < T:
-            tau=t-n+1
+        for t in range(T):
+            
             #time.sleep(0.02)
 
-            if t < T:
-                # execute the action
-                #important note: after this step, the agent is at time t+1 while the time loop is still at t
-                state, reward, done, _ = env.step(action)
+            # Select an action
+            action = select_action(state_0, explore_rate)
 
-                # Observe the result
-                state = state_to_bucket(state)
-                total_reward += reward
-                
-                #Append reward (R_t) to deque
-                R.append(reward)
+            # execute the action
+            state, reward, done, _ = env.step(action)
 
-                #append S_t+1 and select/append next action A_t+1
-                S.append(state)
-                #Record terminal time when you find it, otherwise select next action
-                if done:  T=t+1
-                else:
-                    action = select_action(state,explore_rate)
-                    A.append(action)
-                    #important note: the new action is only recorded, but not taken.
+            # Observe the result
+            state = state_to_bucket(state)
+            total_reward += reward
 
+            # Update the Q and env_model based on the result
+            q_sa = q_table[state + (select_action(state, explore_rate),)]
 
-            # Update Q, note how unneeded values are removed with popleft()
-            #important note: n step algorithms use [n -1] Rewards and bootstrap for state and action value at timestep tau+n
-            if(tau >= 0):
-                s,a = S[0], A[0]
+            q_table[state_0 + (action,)] += alpha * (reward + discount * q_sa - q_table[state_0 + (action,)])
+            env_model.append([state_0, action, reward, state])
 
-                #build appropriately size gamma vector, esp needed when episode terminates with t < n
-                gamma_vector = [discount**(i+1) for i in range(len(R) - 1)]
+            #Do Planning
+            for n in range(planning_steps):
+                s,a,r,sp = random.choice(env_model)
+                q_sa = q_table[sp + (select_action(sp, explore_rate),)]
+                q_table[s + (a,)] += alpha * (r + discount * q_sa - q_table[s + (a,)])
 
-                if(tau+n < T):
-                    G = R.popleft() + np.dot(gamma_vector,R) + discount**(n-1)*q_table[S[len(S)-2] + (A[len(A)-2],)]
-                elif(tau < T- 1):
-                    G = R.popleft() + np.dot(gamma_vector,R)
-                else:
-                    G= R.popleft()
-                q_table[s + (a,)] += alpha*(G - q_table[S.popleft() + (A.popleft(),)])
-               
-            #step t forward one step
-            t=t+1
-
-            # Print data
-            if DEBUG_MODE == 2:
-                print("\nEpisode = %d" % episode)
-                print("t = %d" % t)
-                print("Action: %d" % action)
-                print("State: %s" % str(state))
-                print("Reward: %f" % reward)
-                print("Max Q: %f" % max_q)
-                print("Explore rate: %f" % explore_rate)
-                print("Learning rate: %f" % alpha)
-                print("Streaks: %d" % num_streaks)
-                print("")
-
-            elif DEBUG_MODE == 1:
-                if done or t >= T - 1:
-                    print("\nEpisode = %d" % episode)
-                    print("t = %d" % t)
-                    print("Explore rate: %f" % explore_rate)
-                    print("Learning rate: %f" % alpha)
-                    print("Streaks: %d" % num_streaks)
-                    print("Total reward: %f" % total_reward)
-                    print("")
+            # Setting up for the next iteration
+            state_0 = state
 
             # Render tha maze
             if render_maze:
@@ -118,9 +65,11 @@ def simulate():
             if env.is_game_over():
                 sys.exit()
 
-            if t >= T+n-1:
+            if done:
                 print("Episode %d finished after %f time steps with total reward = %f (streak %d)."
                       % (episode, t, total_reward, num_streaks))
+                #print results
+                print(episode, t)
 
                 if t <= t_solved:
                     num_streaks += 1
@@ -179,7 +128,6 @@ def state_to_bucket(state):
 if __name__ == "__main__":
 
     # Initialize the "maze" environment, see __init__.py for more env names
-    #env = gym.make("maze-sample-3x3-v0")
     #env = gym.make("maze-random-5x5-v0")
     #env=gym.make("maze-sample-5x5-v0")
     env=gym.make("maze-sample-10x10-v0")
@@ -201,7 +149,7 @@ if __name__ == "__main__":
     min_epsilon = 0.001
     min_alpha = 0.2
     decay_factor = np.prod(n_states_tuple, dtype=float) / 10.0
-    n = 10 #n-step sarsa
+    planning_steps = 10
 
     '''
     Defining the simulation related constants
@@ -218,5 +166,6 @@ if __name__ == "__main__":
     Creating a Q-Table for each state-action pair and environment model table
     '''
     q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
+    env_model = []
 
-    simulate()
+    simulate(planning_steps=10)

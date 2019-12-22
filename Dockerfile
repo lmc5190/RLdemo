@@ -14,6 +14,7 @@ RUN apt-get update -y && \
 
 #install plot tools and open ai gym dependencies
 RUN pip install -U matplotlib && \
+    pip install pandas && \
     pip install gym[atari] && \
     pip install gym-minigrid && \
 
