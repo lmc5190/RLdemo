@@ -5,11 +5,12 @@ import random
 import time
 import matplotlib.pyplot as plt
 import pandas as pd
+import csv
 
 import gym
 import gym_maze
 
-def dynasarsa(planning_steps):
+def dynasarsa(planning_steps, run=1):
 
     # Instantiating the learning related parameters
     alpha = get_alpha(0)
@@ -29,7 +30,9 @@ def dynasarsa(planning_steps):
         state_0 = state_to_bucket(state)
         total_reward = 0
 
-        for t in range(T):
+        max_timesteps=np.prod(n_states_tuple, dtype=int) * 100
+
+        for t in range(max_timesteps):
             
             #time.sleep(0.02)
 
@@ -63,13 +66,132 @@ def dynasarsa(planning_steps):
                 env.render()
 
             if env.is_game_over():
-                sys.exit()
+                break
 
             if done:
+                T=t
                 print("Episode %d finished after %f time steps with total reward = %f (streak %d)."
                       % (episode, t, total_reward, num_streaks))
                 #print results
                 print(episode, t)
+                with open('results.csv', 'w', newline='') as csvfile:
+                    writer = csv.writer(csvfile, delimiter=',',
+                                            quotechar='\"', quoting=csv.QUOTE_MINIMAL)
+                    writer.writerow(['dynasarsa', run, episode, T])
+
+                if t <= t_solved:
+                    num_streaks += 1
+                else:
+                    num_streaks = 0
+                break
+
+            elif t >= max_timesteps - 1:
+                print("Episode %d timed out at %d with total reward = %f."
+                      % (episode, t, total_reward))
+
+        # It's considered done when it's solved over 120 times consecutively
+        if num_streaks > terminal_streak:
+            break
+
+        # Update parameters
+        explore_rate = get_explore_rate(episode)
+        alpha = get_alpha(episode)
+
+def nstepsarsa(n, run=1):
+
+    # Instantiating the learning related parameters
+    alpha = get_alpha(0)
+    explore_rate = get_explore_rate(0)
+    discount = 0.99
+    num_streaks = 0
+
+    # Render tha maze
+    env.render()
+
+    for episode in range(episodes):
+
+        # Reset the environment, will not start at Terminal State
+        state = env.reset()
+
+        # the initial state and action
+        state = state_to_bucket(state)
+        action = select_action(state, explore_rate)
+        total_reward = 0
+
+        #initialize deques
+        S = deque()
+        A = deque()
+        R = deque()
+        A.append(action)
+        S.append(state)
+
+        #intialize times
+        T = float("inf")
+        tau = float("-inf") #tau is timestep which for the updated action value's state and action
+        t=0
+        done = False
+
+        while tau < T:
+            tau=t-n+1
+            #time.sleep(0.02)
+
+            if t < T:
+                # execute the action
+                #important note: after this step, the agent is at time t+1 while the time loop is still at t
+                state, reward, done, _ = env.step(action)
+
+                # Observe the result
+                state = state_to_bucket(state)
+                total_reward += reward
+                
+                #Append reward (R_t) to deque
+                R.append(reward)
+
+                #append S_t+1 and select/append next action A_t+1
+                S.append(state)
+                #Record terminal time when you find it, otherwise select next action
+                if done:  T=t+1
+                else:
+                    action = select_action(state,explore_rate)
+                    A.append(action)
+                    #important note: the new action is only recorded, but not taken.
+
+
+            # Update Q, note how unneeded values are removed with popleft()
+            #important note: n step algorithms use [n -1] Rewards and bootstrap for state and action value at timestep tau+n
+            if(tau >= 0):
+                s,a = S[0], A[0]
+
+                #build appropriately size gamma vector, esp needed when episode terminates with t < n
+                gamma_vector = [discount**(i+1) for i in range(len(R) - 1)]
+
+                if(tau+n < T):
+                    G = R.popleft() + np.dot(gamma_vector,R) + discount**(n-1)*q_table[S[len(S)-2] + (A[len(A)-2],)]
+                elif(tau < T- 1):
+                    G = R.popleft() + np.dot(gamma_vector,R)
+                else:
+                    G= R.popleft()
+                q_table[s + (a,)] += alpha*(G - q_table[S.popleft() + (A.popleft(),)])
+               
+            #step t forward one step
+            t=t+1
+
+            # Render tha maze
+            if render_maze:
+                env.render()
+
+            if env.is_game_over():
+                break
+
+            if t >= T+n-1:
+                print("Episode %d finished after %f time steps with total reward = %f (streak %d)."
+                      % (episode, t, total_reward, num_streaks))
+
+                
+                with open('results.csv', 'w', newline='') as csvfile:
+                    writer = csv.writer(csvfile, delimiter=',',
+                                            quotechar='\"', quoting=csv.QUOTE_MINIMAL)
+                    writer.writerow(['nstepsarsa', run, episode, T])
 
                 if t <= t_solved:
                     num_streaks += 1
@@ -168,4 +290,14 @@ if __name__ == "__main__":
     q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
     env_model = []
 
-    simulate(planning_steps=10)
+    run=1
+    for i in range(30):
+        dynasarsa(planning_steps=10, run=run)
+        q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
+        env_model = []
+        run=run+1
+    run=1
+    for i in range(30):
+        nstepsarsa(n=10, run=run)
+        q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
+        run=run+1
