@@ -6,6 +6,7 @@ import time
 import matplotlib.pyplot as plt
 import pandas as pd
 import csv
+from collections import deque
 
 import gym
 import gym_maze
@@ -74,7 +75,7 @@ def dynasarsa(planning_steps, run=1):
                       % (episode, t, total_reward, num_streaks))
                 #print results
                 print(episode, t)
-                with open('results.csv', 'w', newline='') as csvfile:
+                with open('../gym-maze-myscripts/experiments/data/dynasarsa_vs_nstepsarsa.csv', 'a+', newline='') as csvfile:
                     writer = csv.writer(csvfile, delimiter=',',
                                             quotechar='\"', quoting=csv.QUOTE_MINIMAL)
                     writer.writerow(['dynasarsa', run, episode, T])
@@ -188,7 +189,7 @@ def nstepsarsa(n, run=1):
                       % (episode, t, total_reward, num_streaks))
 
                 
-                with open('results.csv', 'w', newline='') as csvfile:
+                with open('../gym-maze-myscripts/experiments/data/dynasarsa_vs_nstepsarsa.csv', 'a+', newline='') as csvfile:
                     writer = csv.writer(csvfile, delimiter=',',
                                             quotechar='\"', quoting=csv.QUOTE_MINIMAL)
                     writer.writerow(['nstepsarsa', run, episode, T])
@@ -291,13 +292,13 @@ if __name__ == "__main__":
     env_model = []
 
     run=1
-    for i in range(30):
+    for i in range(3):
         dynasarsa(planning_steps=10, run=run)
         q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
         env_model = []
         run=run+1
     run=1
-    for i in range(30):
+    for i in range(3):
         nstepsarsa(n=10, run=run)
         q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
         run=run+1
