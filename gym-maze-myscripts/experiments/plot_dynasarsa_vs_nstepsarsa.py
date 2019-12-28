@@ -28,6 +28,7 @@ plt.fill_between(x1, y1-error1, y1+error1)
 plt.plot(x2, y2, 'k--')
 plt.fill_between(x2, y2-error2, y2+error2)
 plt.legend(['dynasarsa', 'nstepsarsa'], loc='upper right')
+plt.xlim(0,75)
 plt.savefig("dynasarsa_vs_nstep_10steps.png", format="png")
 plt.show()
 
