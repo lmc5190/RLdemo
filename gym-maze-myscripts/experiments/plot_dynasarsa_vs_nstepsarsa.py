@@ -6,9 +6,6 @@ import matplotlib.pyplot as plt
 col_names = ['method', 'run', 'episode', 'terminal_timestep']
 df = pd.read_csv("data/dynasarsa_vs_nstepsarsa.csv")
 df.columns = col_names
-#df = pd.DataFrame(columns=col_names)
-#df['episode'] = pd.Series(dtype=np.int64)
-#df['terminal_timestep'] = pd.Series(dtype=np.int64)
 
 df_wmeans = df.groupby(['method', 'episode'])['terminal_timestep'].mean().to_frame(name = 'mean_terminal_timestep').reset_index()
 df_wsems = df.groupby(['method','episode'])['terminal_timestep'].sem().to_frame(name = 'stderror_terminal_timestep').reset_index()
@@ -31,13 +28,3 @@ plt.legend(['dynasarsa', 'nstepsarsa'], loc='upper right')
 plt.xlim(0,75)
 plt.savefig("dynasarsa_vs_nstep_10steps.png", format="png")
 plt.show()
-
-
-#filepath = 'data/dynasarsa_vs_nstepsarsa.csv'
-#with open(filepath) as fp:
-#   line = fp.readline()
-#  cnt = 1
-#   while line:
-#       print("Line {}: {}".format(cnt, line.strip()))
-#       line = fp.readline()
-#       cnt += 1
