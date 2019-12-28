@@ -28,4 +28,15 @@ plt.fill_between(x1, y1-error1, y1+error1)
 plt.plot(x2, y2, 'k--')
 plt.fill_between(x2, y2-error2, y2+error2)
 plt.legend(['dynasarsa', 'nstepsarsa'], loc='upper right')
-plt.draw()
+plt.savefig("dynasarsa_vs_nstep_10steps.png", format="png")
+plt.show()
+
+
+#filepath = 'data/dynasarsa_vs_nstepsarsa.csv'
+#with open(filepath) as fp:
+#   line = fp.readline()
+#  cnt = 1
+#   while line:
+#       print("Line {}: {}".format(cnt, line.strip()))
+#       line = fp.readline()
+#       cnt += 1

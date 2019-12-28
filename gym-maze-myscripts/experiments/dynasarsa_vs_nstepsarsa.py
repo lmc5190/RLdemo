@@ -201,9 +201,7 @@ def nstepsarsa(n, run=1):
                 break
 
             elif t >= T - 1:
-                print("Episode %d timed out at %d with total reward = %f."
-                      % (episode, t, total_reward))
-
+                pass
         # It's considered done when it's solved over 120 times consecutively
         if num_streaks > terminal_streak:
             break
@@ -292,13 +290,13 @@ if __name__ == "__main__":
     env_model = []
 
     run=1
-    for i in range(3):
+    for i in range(30):
         dynasarsa(planning_steps=10, run=run)
         q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
         env_model = []
         run=run+1
     run=1
-    for i in range(3):
+    for i in range(30):
         nstepsarsa(n=10, run=run)
         q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
         run=run+1
