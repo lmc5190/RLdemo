@@ -14,8 +14,8 @@ def extract_axisvalues_bymethod(df,method_name, col_name):
     #returns vector represeting axis values from dataframe containing column 'col_name' for specified 'method_name'
     return df[df['method']==method_name].loc[:,col_name].to_numpy()
 
-metric= 'G_direct_mean'
-legend_loc= 'center right' 
+metric= 'G_indirect_n'
+legend_loc= 'upper right' 
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
 figurefile_header= "plots/10step_" 
