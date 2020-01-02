@@ -21,13 +21,17 @@ legend_loc= 'upper right'
 figurefile_header= "plots/10step_" 
 figure_file= figurefile_header + metric + ".png"
 col_names = ['method', 'run', 'episode', 'terminal_timestep', 'G_direct_mean', 'G_direct_std', 'G_direct_n',\
-            'G_indirect_mean', 'G_indirect_std', 'G_indirect_n']
+            'G_indirect_mean', 'G_indirect_std', 'G_indirect_n', 'dQ_direct_mean', 'dQ_direct_std', \
+            'dQ_direct_mean', 'dQ_direct_std']
 data_file="data/latest.csv"
 method1='dynasarsa'
 method2='nstepsarsa'
 
 df = pd.read_csv(data_file)
 df.columns = col_names
+
+#custom metric
+
 
 df= compute_meansandstderrors_overruns(df, metric)
 
