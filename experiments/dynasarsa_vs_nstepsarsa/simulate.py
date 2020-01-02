@@ -33,6 +33,10 @@ def dynasarsa(planning_steps, run=1):
 
         max_timesteps=np.prod(n_states_tuple, dtype=int) * 100
 
+        #metric tracking
+        G_direct_vector = []
+        G_indirect_vector = []
+
         for t in range(max_timesteps):
             
             #time.sleep(0.02)
@@ -49,15 +53,18 @@ def dynasarsa(planning_steps, run=1):
 
             # Update the Q and env_model based on the result
             q_sa = q_table[state + (select_action(state, explore_rate),)]
-
-            q_table[state_0 + (action,)] += alpha * (reward + discount * q_sa - q_table[state_0 + (action,)])
+            G_direct = reward + discount * q_sa
+            q_table[state_0 + (action,)] += alpha * (G_direct - q_table[state_0 + (action,)])
             env_model.append([state_0, action, reward, state])
+            G_direct_vector.append(G_direct) #metric tracking
 
             #Do Planning
             for n in range(planning_steps):
                 s,a,r,sp = random.choice(env_model)
                 q_sa = q_table[sp + (select_action(sp, explore_rate),)]
-                q_table[s + (a,)] += alpha * (r + discount * q_sa - q_table[s + (a,)])
+                G_indirect = r + discount * q_sa
+                q_table[s + (a,)] += alpha * (G_indirect - q_table[s + (a,)])
+                G_indirect_vector.append(G_indirect) #metric tracking
 
             # Setting up for the next iteration
             state_0 = state
@@ -75,10 +82,11 @@ def dynasarsa(planning_steps, run=1):
                       % (episode, t, total_reward, num_streaks))
                 #print results
                 print(episode, t)
-                with open('../gym-maze-myscripts/experiments/data/dynasarsa_vs_nstepsarsa.csv', 'a+', newline='') as csvfile:
+                with open('../experiments/dynasarsa_vs_nstepsarsa/data/latest.csv', 'a+', newline='') as csvfile:
                     writer = csv.writer(csvfile, delimiter=',',
                                             quotechar='\"', quoting=csv.QUOTE_MINIMAL)
-                    writer.writerow(['dynasarsa', run, episode, T])
+                    writer.writerow(['dynasarsa', run, episode, T, np.mean(G_direct_vector), np.std(G_direct_vector), len(G_direct_vector), \
+                                    np.mean(G_indirect_vector), np.std(G_indirect_vector), len(G_indirect_vector)])
 
                 if t <= t_solved:
                     num_streaks += 1
@@ -132,6 +140,9 @@ def nstepsarsa(n, run=1):
         t=0
         done = False
 
+        #metric tracking
+        G_vector=[]
+
         while tau < T:
             tau=t-n+1
             #time.sleep(0.02)
@@ -173,7 +184,7 @@ def nstepsarsa(n, run=1):
                 else:
                     G= R.popleft()
                 q_table[s + (a,)] += alpha*(G - q_table[S.popleft() + (A.popleft(),)])
-               
+                G_vector.append(G) #metric tracking
             #step t forward one step
             t=t+1
 
@@ -189,10 +200,11 @@ def nstepsarsa(n, run=1):
                       % (episode, t, total_reward, num_streaks))
 
                 
-                with open('../gym-maze-myscripts/experiments/data/dynasarsa_vs_nstepsarsa.csv', 'a+', newline='') as csvfile:
+                with open('../experiments/dynasarsa_vs_nstepsarsa/data/latest.csv', 'a+', newline='') as csvfile:
                     writer = csv.writer(csvfile, delimiter=',',
                                             quotechar='\"', quoting=csv.QUOTE_MINIMAL)
-                    writer.writerow(['nstepsarsa', run, episode, T])
+                    writer.writerow(['nstepsarsa', run, episode, T, np.mean(G_vector), np.std(G_vector), len(G_vector), \
+                                    0,0,0 ])
 
                 if t <= t_solved:
                     num_streaks += 1
@@ -290,13 +302,13 @@ if __name__ == "__main__":
     env_model = []
 
     run=1
-    for i in range(30):
+    for i in range(5):
         dynasarsa(planning_steps=10, run=run)
         q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
         env_model = []
         run=run+1
     run=1
-    for i in range(30):
+    for i in range(5):
         nstepsarsa(n=10, run=run)
         q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
         run=run+1
