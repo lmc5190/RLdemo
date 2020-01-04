@@ -14,16 +14,16 @@ def extract_axisvalues_bymethod(df,method_name, col_name):
     #returns vector represeting axis values from dataframe containing column 'col_name' for specified 'method_name'
     return df[df['method']==method_name].loc[:,col_name].to_numpy()
 
-metric= 'epsilon'
+metric= 'dQ_direct_std'
 legend_loc= 'upper right' 
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
 figurefile_header= "plots/10step_" 
-figure_file= figurefile_header + metric + ".png"
+figure_file= figurefile_header + metric + "test" + ".png"
 col_names = ['method', 'run', 'episode', 'terminal_timestep', 'G_direct_mean', 'G_direct_std', 'G_direct_n',\
             'G_indirect_mean', 'G_indirect_std', 'G_indirect_n', 'dQ_direct_mean', 'dQ_direct_std', \
             'dQ_indirect_mean', 'dQ_indirect_std', 'alpha', 'epsilon']
-data_file="data/latest.csv"
+data_file="data/test.csv"
 method1='dynasarsa'
 method2='nstepsarsa'
 

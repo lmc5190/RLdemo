@@ -115,7 +115,7 @@ def nstepsarsa(n, run=1):
     if render_maze:
         env.render()
 
-    for episode in range(episodes):
+    for episode in range(max_episodes):
 
         # Reset the environment, will not start at Terminal State
         state = env.reset()
@@ -284,7 +284,7 @@ if __name__ == "__main__":
     Defining the simulation related constants
     '''
     max_episodes = 200
-    render_maze = True
+    render_maze = False
 
     '''
     Creating a Q-Table for each state-action pair and environment model table
@@ -296,12 +296,14 @@ if __name__ == "__main__":
     outfile = '../experiments/dynasarsa_vs_nstepsarsa/data/test.csv'
 
     run=1
+    '''
     for i in range(5):
         dynasarsa(planning_steps=10, run=run)
         q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
         env_model = []
         run=run+1
     run=1
+    '''
     for i in range(5):
         nstepsarsa(n=n_nstepsarsa, run=run)
         q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
