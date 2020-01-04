@@ -16,6 +16,7 @@ def dynasarsa(planning_steps, run=1):
     alpha = get_alpha(0)
     epsilon = get_epsilon(0)
     gamma = get_gamma()
+    num_streaks = 0
 
     # Render tha maze
     if render_maze:
@@ -82,11 +83,17 @@ def dynasarsa(planning_steps, run=1):
                 break
 
             if done:
-                T=t
-                print("Episode %d finished after %f time steps with total reward = %f ."
-                      % (episode, t, total_reward))
-                #print results
-                print(episode, t)
+                T=t+1 #since agent is at t+1 while timeloop is at t
+                if T == optimal_steps:
+                    num_streaks = num_streaks + 1
+
+                else:
+                    num_streaks = 0
+
+                print("Episode %d finished after %d time steps with total reward = %f and on a %d game winning streak"
+                      % (episode, T, total_reward, num_streaks))
+                print("optimal steps " + str(optimal_steps))
+
                 with open(outfile, 'a+', newline='') as csvfile:
                     writer = csv.writer(csvfile, delimiter=',',
                                             quotechar='\"', quoting=csv.QUOTE_MINIMAL)
@@ -94,6 +101,7 @@ def dynasarsa(planning_steps, run=1):
                                     np.mean(G_indirect_vector), np.std(G_indirect_vector), len(G_indirect_vector), \
                                     np.mean(dQ_direct_vector), np.std(dQ_direct_vector),\
                                     np.mean(dQ_indirect_vector), np.std(dQ_indirect_vector), alpha, epsilon ])
+
                 break
 
             elif t >= max_timesteps - 1:
@@ -110,6 +118,7 @@ def nstepsarsa(n, run=1):
     alpha = get_alpha(0)
     epsilon = get_epsilon(0)
     gamma = get_gamma()
+    num_streaks = 0
 
     # Render tha maze
     if render_maze:
@@ -186,8 +195,6 @@ def nstepsarsa(n, run=1):
                 q_table[s + (a,)] += alpha*dQ
                 G_vector.append(G) #metric tracking
                 dQ_vector.append(dQ)
-            #step t forward one step
-            t=t+1
 
             # Render tha maze
             if render_maze:
@@ -197,9 +204,15 @@ def nstepsarsa(n, run=1):
                 print("game over break")
                 break
 
-            if t >= T+n-1:
-                print("Episode %d finished after %f time steps with total reward = %f."
-                      % (episode, t, total_reward))
+            #if t >= T+n-1:
+            if tau == T-1:
+                if T == optimal_steps:
+                    num_streaks = num_streaks + 1
+                else:
+                    num_streaks = 0
+
+                print("Episode %d finished after %d time steps with total reward = %f and on a %d game winning streak"
+                      % (episode, T, total_reward, num_streaks))
 
                 
                 with open(outfile, 'a+', newline='') as csvfile:
@@ -210,6 +223,9 @@ def nstepsarsa(n, run=1):
                 break
             elif t >= T - 1:
                 pass
+
+            #step t forward one step
+            t=t+1
 
         # Update parameters
         epsilon = get_epsilon(episode)
@@ -227,11 +243,11 @@ def select_action(state, epsilon):
 
 
 def get_epsilon(t):
-    return max(min_epsilon, min(0.8, 1.0 - math.log10((t+1)/decay_factor)))
+    return max(min_epsilon, min(0.8, 1.0 - math.log10((t+1)*decay_factor)))
 
 
 def get_alpha(t):
-    return max(min_alpha, min(0.8, 1.0 - math.log10((t+1)/decay_factor)))
+    return max(min_alpha, min(0.8, 1.0 - math.log10((t+1)*decay_factor)))
 
 def get_gamma():
     return 0.99
@@ -274,9 +290,9 @@ if __name__ == "__main__":
     '''
     Learning related constants
     '''
-    min_epsilon = 0.001
-    min_alpha = 0.2
-    decay_factor = np.prod(n_states_tuple, dtype=float) / 10.0
+    min_epsilon = 0.0
+    min_alpha = 0.0
+    decay_factor = 10.0/np.prod(n_states_tuple, dtype=float)
     planning_steps = 10
     n_nstepsarsa = 10
 
@@ -285,6 +301,7 @@ if __name__ == "__main__":
     '''
     max_episodes = 200
     render_maze = False
+    optimal_steps = 62
 
     '''
     Creating a Q-Table for each state-action pair and environment model table
@@ -293,17 +310,16 @@ if __name__ == "__main__":
     env_model = []
 
     #defining outputfile
-    outfile = '../experiments/dynasarsa_vs_nstepsarsa/data/test.csv'
+    outfile = '../experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/data/test.csv'
 
     run=1
-    '''
     for i in range(5):
         dynasarsa(planning_steps=10, run=run)
         q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
         env_model = []
         run=run+1
+
     run=1
-    '''
     for i in range(5):
         nstepsarsa(n=n_nstepsarsa, run=run)
         q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)

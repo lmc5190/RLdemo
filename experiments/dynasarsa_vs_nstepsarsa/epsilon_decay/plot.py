@@ -14,7 +14,7 @@ def extract_axisvalues_bymethod(df,method_name, col_name):
     #returns vector represeting axis values from dataframe containing column 'col_name' for specified 'method_name'
     return df[df['method']==method_name].loc[:,col_name].to_numpy()
 
-metric= 'dQ_direct_std'
+metric= 'terminal_timestep'
 legend_loc= 'upper right' 
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
