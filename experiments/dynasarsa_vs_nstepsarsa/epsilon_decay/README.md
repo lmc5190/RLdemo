@@ -10,4 +10,4 @@ I plan to plot solution time versus multiple decay rates. The choose the behavio
 
 This generally looks like the plot in foundation/epsilon.
 
-Thanks to https://www.codecogs.com/latex/eqneditor.php for helping me render equations here.
+Thanks to the developrs at CodeCogs https://www.codecogs.com/latex/eqneditor.php for helping me render equations. Please support them!
