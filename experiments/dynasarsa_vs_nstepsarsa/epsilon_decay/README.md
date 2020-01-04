@@ -4,7 +4,7 @@
 In plot foundation/dQ_direct_std, we see dynasarsa peak and then have a long tail throughout the rest of the experiment.
 I'd like to conduct an experiment to see if we can shorten this tail by increasing the epsilon decay rate.
 
-I plan to plot solution time versus multiple decay rates. The choose the behavior below to govern the decay of epsilon, where t is equal to the episode number.
+I plan to plot solution time versus multiple decay rates. The choose the behavior below to govern the decay of epsilon, where t is equal to the episode number and Xi is the decay rate.
 
 ![equation](https://latex.codecogs.com/gif.latex?\epsilon(t)&space;=&space;\max&space;(&space;\epsilon_{min},&space;\min(\epsilon_{max},&space;1-\log_{10}\xi&space;t)&space;))
 
