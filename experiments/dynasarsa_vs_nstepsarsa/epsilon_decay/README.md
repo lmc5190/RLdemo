@@ -8,6 +8,6 @@ I plan to plot solution time versus multiple decay rates. The choose the behavio
 
 ![equation](https://latex.codecogs.com/gif.latex?\epsilon(t)&space;=&space;\max&space;(&space;\epsilon_{min},&space;\min(\epsilon_{max},&space;1-\log_{10}\xi&space;t)&space;))
 
-This generally looks like the plot in foundation/epsilon.
+This behavior is shown graphically looks like the plot in foundation/epsilon.
 
-Thanks to the developrs at CodeCogs https://www.codecogs.com/latex/eqneditor.php for helping me render equations. Please support them!
+Thanks to the developers at CodeCogs https://www.codecogs.com/latex/eqneditor.php for helping me render equations. If you use their service, please acknowledge and support them!
