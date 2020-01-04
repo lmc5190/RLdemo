@@ -17,6 +17,7 @@ def dynasarsa(planning_steps, run=1):
     epsilon = get_epsilon(0)
     gamma = get_gamma()
     num_streaks = 0
+    solution_episode = -1
 
     # Render tha maze
     if render_maze:
@@ -90,9 +91,12 @@ def dynasarsa(planning_steps, run=1):
                 else:
                     num_streaks = 0
 
+                if num_streaks == solution_streaks:
+                    solution_episode = episode
+
+
                 print("Episode %d finished after %d time steps with total reward = %f and on a %d game winning streak"
                       % (episode, T, total_reward, num_streaks))
-                print("optimal steps " + str(optimal_steps))
 
                 with open(outfile, 'a+', newline='') as csvfile:
                     writer = csv.writer(csvfile, delimiter=',',
@@ -100,7 +104,7 @@ def dynasarsa(planning_steps, run=1):
                     writer.writerow(['dynasarsa', run, episode, T, np.mean(G_direct_vector), np.std(G_direct_vector), len(G_direct_vector), \
                                     np.mean(G_indirect_vector), np.std(G_indirect_vector), len(G_indirect_vector), \
                                     np.mean(dQ_direct_vector), np.std(dQ_direct_vector),\
-                                    np.mean(dQ_indirect_vector), np.std(dQ_indirect_vector), alpha, epsilon ])
+                                    np.mean(dQ_indirect_vector), np.std(dQ_indirect_vector), alpha, epsilon, solution_episode])
 
                 break
 
@@ -119,6 +123,7 @@ def nstepsarsa(n, run=1):
     epsilon = get_epsilon(0)
     gamma = get_gamma()
     num_streaks = 0
+    solution_episode = -1
 
     # Render tha maze
     if render_maze:
@@ -211,6 +216,9 @@ def nstepsarsa(n, run=1):
                 else:
                     num_streaks = 0
 
+                if num_streaks == solution_streaks:
+                    solution_episode = episode
+
                 print("Episode %d finished after %d time steps with total reward = %f and on a %d game winning streak"
                       % (episode, T, total_reward, num_streaks))
 
@@ -219,7 +227,7 @@ def nstepsarsa(n, run=1):
                     writer = csv.writer(csvfile, delimiter=',',
                                             quotechar='\"', quoting=csv.QUOTE_MINIMAL)
                     writer.writerow(['nstepsarsa', run, episode, T, np.mean(G_vector), np.std(G_vector), len(G_vector), \
-                                    0,0,0, np.mean(dQ_vector), np.std(dQ_vector), 0, 0, alpha, epsilon])
+                                    0,0,0, np.mean(dQ_vector), np.std(dQ_vector), 0, 0, alpha, epsilon, solution_episode])
                 break
             elif t >= T - 1:
                 pass
@@ -230,6 +238,7 @@ def nstepsarsa(n, run=1):
         # Update parameters
         epsilon = get_epsilon(episode)
         alpha = get_alpha(episode)
+        print(solution_episode)
 
 
 def select_action(state, epsilon):
@@ -302,6 +311,7 @@ if __name__ == "__main__":
     max_episodes = 200
     render_maze = False
     optimal_steps = 62
+    solution_streaks = 10 #number of streaks when maze is considered solved
 
     '''
     Creating a Q-Table for each state-action pair and environment model table
