@@ -22,7 +22,7 @@ figurefile_header= "plots/10step_"
 figure_file= figurefile_header + metric + "test" + ".png"
 col_names = ['method', 'run', 'episode', 'terminal_timestep', 'G_direct_mean', 'G_direct_std', 'G_direct_n',\
             'G_indirect_mean', 'G_indirect_std', 'G_indirect_n', 'dQ_direct_mean', 'dQ_direct_std', \
-            'dQ_indirect_mean', 'dQ_indirect_std', 'alpha', 'epsilon']
+            'dQ_indirect_mean', 'dQ_indirect_std', 'alpha', 'epsilon', 'solution_episode', 'decay_multiplier']
 data_file="data/test.csv"
 method1='dynasarsa'
 method2='nstepsarsa'

@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 
 def compute_meansandstderrors_overruns(df, metric):
     #returns dataframe with means and standard errors over runs for specified metric
-    #grouping done by methods and episodes
-    df_wmeans = df.groupby(['method', 'episode'])[metric].mean().to_frame(name = 'mean_'+ metric).reset_index()
-    df_wsems = df.groupby(['method','episode'])[metric].sem().to_frame(name = 'stderror_'+ metric).reset_index()
+    #grouping done by methods and decay_multiplier
+    df_wmeans = df.groupby(['method','decay_multiplier'])[metric].mean().to_frame(name = 'mean_'+ metric).reset_index()
+    df_wsems = df.groupby(['method', 'decay_multiplier'])[metric].sem().to_frame(name = 'stderror_'+ metric).reset_index()
     df_wmeans['stderror_'+ metric]= df_wsems.loc[:, ('stderror_'+ metric)]
     return df_wmeans
 
@@ -14,7 +14,24 @@ def extract_axisvalues_bymethod(df,method_name, col_name):
     #returns vector represeting axis values from dataframe containing column 'col_name' for specified 'method_name'
     return df[df['method']==method_name].loc[:,col_name].to_numpy()
 
-metric= 'terminal_timestep'
+def remove_unsolved_runs(df):
+    #will remove any row where solution_episode = -1, so episodic information is removed prior to location of solved_ep
+    #this is okay since we are aggregating a single value per run over all runs, not over episodes
+    return df[df['solution_episode'] != -1]
+
+def plot_nrunsolved_vs_decayrate(df):
+    #Its been observed that, for the same decay rate, sometimes the run is solved, but sometimes not
+    #This plot will indicate how many solved runs per decay rate
+    run_df = df.groupby(['method','run','decay_multiplier'])['solution_episode'].max().to_frame(name = 'max_solution_episode').reset_index()
+    run_df['run_solved'] = np.where(run_df['max_solution_episode'] > -1, 1, 0)
+    cnt_df = run_df.groupby(['method','decay_multiplier'])['run_solved'].sum().to_frame(name = 'nrun_solved')
+
+
+def keep_onerow_perrun(df):
+    return df.groupby(['method','run', 'decay_multiplier']).first().reset_index()
+    
+
+metric= 'solution_episode'
 legend_loc= 'upper right' 
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
@@ -22,23 +39,24 @@ figurefile_header= "plots/10step_"
 figure_file= figurefile_header + metric + "test" + ".png"
 col_names = ['method', 'run', 'episode', 'terminal_timestep', 'G_direct_mean', 'G_direct_std', 'G_direct_n',\
             'G_indirect_mean', 'G_indirect_std', 'G_indirect_n', 'dQ_direct_mean', 'dQ_direct_std', \
-            'dQ_indirect_mean', 'dQ_indirect_std', 'alpha', 'epsilon']
-data_file="data/test.csv"
+            'dQ_indirect_mean', 'dQ_indirect_std', 'alpha', 'epsilon', 'solution_episode', 'decay_multiplier']
+data_file="data/neq10.csv"
 method1='dynasarsa'
 method2='nstepsarsa'
+methods=[method1,method2]
+solved_multipliers=[]
 
 df = pd.read_csv(data_file)
 df.columns = col_names
 
-#custom metric
+df=remove_unsolved_runs(df)
+df=keep_onerow_perrun(df)
+df=compute_meansandstderrors_overruns(df, metric)
 
-
-df= compute_meansandstderrors_overruns(df, metric)
-
-x1= extract_axisvalues_bymethod(df,method1,'episode')
+x1= extract_axisvalues_bymethod(df,method1,'decay_multiplier')
 y1= extract_axisvalues_bymethod(df,method1,('mean_'+metric))
 error1= extract_axisvalues_bymethod(df,method1,('stderror_'+metric))
-x2= extract_axisvalues_bymethod(df,method2,'episode')
+x2= extract_axisvalues_bymethod(df,method2,'decay_multiplier')
 y2 =extract_axisvalues_bymethod(df,method2,('mean_'+metric))
 error2 =extract_axisvalues_bymethod(df,method2,('stderror_'+metric))
 
