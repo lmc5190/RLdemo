@@ -26,7 +26,6 @@ def plot_solutionepisode_vs_decayrate(df):
     df=remove_unsolved_runs(df)
     df=keep_onerow_perrun(df)
     df=compute_meansandstderrors_overruns(df, metric)
-
     x1= extract_axisvalues_bymethod(df,method1,'decay_multiplier')
     y1= extract_axisvalues_bymethod(df,method1,('mean_'+metric))
     error1= extract_axisvalues_bymethod(df,method1,('stderror_'+metric))
@@ -36,7 +35,8 @@ def plot_solutionepisode_vs_decayrate(df):
     plt.style.use('seaborn-whitegrid')
     plt.plot(x1, y1, 'k-')
     plt.fill_between(x1, y1-error1, y1+error1)
-    plt.plot(x2, y2, 'k--')
+    #plt.plot(x2, y2, color='yellow', 'k--')
+    plt.plot(x2, y2, 'y--')
     plt.fill_between(x2, y2-error2, y2+error2)
     plt.legend(['dynasarsa', 'nstepsarsa'], loc=legend_loc)
     #plt.xlim(0,75)
