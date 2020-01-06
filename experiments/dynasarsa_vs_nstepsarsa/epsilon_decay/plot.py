@@ -33,6 +33,8 @@ def plot_solutionepisode_vs_decayrate(df):
     y2 =extract_axisvalues_bymethod(df,method2,('mean_'+metric))
     error2 =extract_axisvalues_bymethod(df,method2,('stderror_'+metric))
     plt.style.use('seaborn-whitegrid')
+    plt.xlabel('decay multiplier')
+    plt.ylabel('solution episode') 
     plt.plot(x1, y1, 'k-')
     plt.fill_between(x1, y1-error1, y1+error1)
     #plt.plot(x2, y2, color='yellow', 'k--')
@@ -57,15 +59,17 @@ def plot_nrunsolved_vs_decayrate(df):
     x2= extract_axisvalues_bymethod(cnt_df,method2,'decay_multiplier')
     y2 =extract_axisvalues_bymethod(cnt_df,method2,'nrun_solved')
     plt.style.use('seaborn-whitegrid')
+    plt.xlabel('decay multiplier')
+    plt.ylabel('Nruns with maze solved (out of 30)') 
     plt.plot(x1, y1, 'k-')
-    plt.plot(x2, y2, 'k--')
+    plt.plot(x2, y2, 'r--')
     plt.legend(['dynasarsa', 'nstepsarsa'], loc=legend_loc)
     #plt.xlim(0,75)
     plt.savefig(figure_file, format="png")
     plt.show()
     return None
 
-metric= 'solution_episode'
+metric= 'nrun_solved'
 legend_loc= 'upper right' 
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
@@ -82,30 +86,5 @@ df = pd.read_csv(data_file)
 df.columns = col_names
 
 #choose appropriate function, comment out others
-#plot_nrunsolved_vs_decayrate(df)
-plot_solutionepisode_vs_decayrate(df)
-
-'''
-df=remove_unsolved_runs(df)
-df=keep_onerow_perrun(df)
-df=compute_meansandstderrors_overruns(df, metric)
-
-
-x1= extract_axisvalues_bymethod(df,method1,'decay_multiplier')
-y1= extract_axisvalues_bymethod(df,method1,('mean_'+metric))
-error1= extract_axisvalues_bymethod(df,method1,('stderror_'+metric))
-x2= extract_axisvalues_bymethod(df,method2,'decay_multiplier')
-y2 =extract_axisvalues_bymethod(df,method2,('mean_'+metric))
-error2 =extract_axisvalues_bymethod(df,method2,('stderror_'+metric))
-
-plt.style.use('seaborn-whitegrid')
-plt.plot(x1, y1, 'k-')
-plt.fill_between(x1, y1-error1, y1+error1)
-plt.plot(x2, y2, 'k--')
-plt.fill_between(x2, y2-error2, y2+error2)
-plt.legend(['dynasarsa', 'nstepsarsa'], loc=legend_loc)
-#plt.xlim(0,75)
-plt.savefig(figure_file, format="png")
-plt.show()
-
-'''
+plot_nrunsolved_vs_decayrate(df)
+#plot_solutionepisode_vs_decayrate(df)
