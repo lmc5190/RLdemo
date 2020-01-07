@@ -12,4 +12,8 @@ This behavior is shown graphically looks like the plot shown for epsilon versus 
 
 ![Image of Epsilon](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/foundation/plots/10step_epsilon.png)
 
+We  varied Xi and observe how many runs of the 10 by 10 maze are solved by dynasarsa (planning steps = 10) and nstepsarsa (n=10).
+
+![Image of Xi Variation](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/plots/10step_nrun_solved.png)
+
 Thanks to the developers at CodeCogs https://www.codecogs.com/latex/eqneditor.php for helping me render equations. If you use their service, please acknowledge and support them!
