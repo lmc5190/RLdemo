@@ -24,5 +24,7 @@ Given the sharper epsilon decay for dynasara, how much can we improve the sample
 
 Here we say that as the decay rate goes up, solved puzzles have much higher sample efficiency. However, no higher decay rates are acceptable for nstepsarsa (n=10).  Since dynasarsa (planning steps = 10) can handle a 4x higher eploration decay, we can confidently say that would yield a solved maze in ~35 episodes over ~105 episode solution for Xi = 1 (or a increase in sample efficieny by 3x).
 
+It would be interesting to test different paramters for dynasara and nstepsarsa, and see if this sensitivity remains.
+
 
 Thanks to the developers at CodeCogs https://www.codecogs.com/latex/eqneditor.php for helping me render equations. If you use their service, please acknowledge and support them!
