@@ -101,7 +101,7 @@ def dynasarsa(planning_steps, run=1):
                 with open(outfile, 'a+', newline='') as csvfile:
                     writer = csv.writer(csvfile, delimiter=',',
                                             quotechar='\"', quoting=csv.QUOTE_MINIMAL)
-                    writer.writerow(['dynasarsa', run, episode, T, np.mean(G_direct_vector), np.std(G_direct_vector), len(G_direct_vector), \
+                    writer.writerow(['dynasarsa', run, episode, planning_steps, T, np.mean(G_direct_vector), np.std(G_direct_vector), len(G_direct_vector), \
                                     np.mean(G_indirect_vector), np.std(G_indirect_vector), len(G_indirect_vector), \
                                     np.mean(dQ_direct_vector), np.std(dQ_direct_vector),\
                                     np.mean(dQ_indirect_vector), np.std(dQ_indirect_vector), alpha, epsilon, solution_episode, decay_multiplier])
@@ -226,7 +226,7 @@ def nstepsarsa(n, run=1):
                 with open(outfile, 'a+', newline='') as csvfile:
                     writer = csv.writer(csvfile, delimiter=',',
                                             quotechar='\"', quoting=csv.QUOTE_MINIMAL)
-                    writer.writerow(['nstepsarsa', run, episode, T, np.mean(G_vector), np.std(G_vector), len(G_vector), \
+                    writer.writerow(['nstepsarsa', run, episode, n, T, np.mean(G_vector), np.std(G_vector), len(G_vector), \
                                     0,0,0, np.mean(dQ_vector), np.std(dQ_vector), 0, 0, alpha, epsilon, solution_episode, decay_multiplier])
                 break
             elif t >= T - 1:
@@ -308,7 +308,7 @@ if __name__ == "__main__":
     '''
     Defining the simulation related constants
     '''
-    max_episodes = 600
+    max_episodes = 400
     render_maze = False
     optimal_steps = 62
     solution_streaks = 10 #number of streaks when maze is considered solved
@@ -320,21 +320,29 @@ if __name__ == "__main__":
     env_model = []
 
     #defining experiment values
-    decay_multipliers = [0.25, 0.5, 1.0, 2.0, 4.0, 8.0] 
-    #defining outputfile
-    outfile = '../experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/data/neq10.csv'
+    decay_multiplier_dynasarsa = 4
+    decay_multiplier_nstepsarsa = 1
+    dynasarsa_planningsteps = [1,2,4,8,10,16,32]
+    nstepsarsa_n = [2,4,8,10,16,32]
     
-    for decay_multiplier in decay_multipliers:
-        decay_factor = decay_multiplier*10.0/np.prod(n_states_tuple, dtype=float)
-        run=1
-        for i in range(30):
-            dynasarsa(planning_steps=10, run=run)
+    #defining outputfile
+    outfile = '../experiments/dynasarsa_vs_nstepsarsa/n/data/test.csv'
+    
+    run=1
+    decay_multiplier =  decay_multiplier_dynasarsa 
+    decay_factor = decay_multiplier*10.0/np.prod(n_states_tuple, dtype=float)
+    for i in range(30):
+        for planning_steps in dynasarsa_planningsteps:
+            dynasarsa(planning_steps=planning_steps, run=run)
             q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
             env_model = []
             run=run+1
 
-        run=1
-        for i in range(30):
-            nstepsarsa(n=n_nstepsarsa, run=run)
+    run=1
+    decay_multiplier =  decay_multiplier_nstepsarsa
+    decay_factor = decay_multiplier*10.0/np.prod(n_states_tuple, dtype=float)
+    for i in range(30):
+        for n in nstepsarsa_n:
+            nstepsarsa(n=n, run=run)
             q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
             run=run+1
