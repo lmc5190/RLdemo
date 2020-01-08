@@ -68,12 +68,34 @@ def plot_nrunsolved_vs_n(df):
     plt.show()
     return None
 
-metric= 'nrun_solved'
-legend_loc= 'upper right' 
+def plot_stderror_runsolved_vs_n(df):
+    df=remove_unsolved_runs(df)
+    df=keep_onerow_perrun(df)
+    df=compute_meansandstderrors_overruns(df, metric)
+    x1= extract_axisvalues_bymethod(df,method1,'n')
+    y1= extract_axisvalues_bymethod(df,method1,('mean_'+metric))
+    error1= extract_axisvalues_bymethod(df,method1,('stderror_'+metric))
+    x2= extract_axisvalues_bymethod(df,method2,'n')
+    y2 =extract_axisvalues_bymethod(df,method2,('mean_'+metric))
+    error2 =extract_axisvalues_bymethod(df,method2,('stderror_'+metric))
+    plt.style.use('seaborn-whitegrid')
+    plt.xlabel('n')
+    plt.ylabel('stderror solution episode') 
+    plt.plot(x1, error1, 'k-')
+    plt.plot(x2, error2, 'r--')
+    plt.legend(['dynasarsa', 'nstepsarsa'], loc=legend_loc)
+    #plt.xlim(0,75)
+    plt.savefig(figure_file, format="png")
+    plt.show()
+    return None
+
+
+metric= 'solution_episode'
+legend_loc= 'center' 
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
 figurefile_header= "plots/ncompare_" 
-figure_file= figurefile_header + metric + ".png"
+figure_file= figurefile_header + "stderror_" + metric + ".png"
 col_names = ['method', 'run', 'episode', 'n', 'terminal_timestep', 'G_direct_mean', 'G_direct_std', 'G_direct_n',\
             'G_indirect_mean', 'G_indirect_std', 'G_indirect_n', 'dQ_direct_mean', 'dQ_direct_std', \
             'dQ_indirect_mean', 'dQ_indirect_std', 'alpha', 'epsilon', 'solution_episode', 'decay_multiplier']
@@ -85,5 +107,6 @@ df = pd.read_csv(data_file)
 df.columns = col_names
 
 #choose appropriate function, comment out others
-plot_nrunsolved_vs_n(df)
+#plot_nrunsolved_vs_n(df)
 #plot_solutionepisode_vs_n(df)
+plot_stderror_runsolved_vs_n(df)
