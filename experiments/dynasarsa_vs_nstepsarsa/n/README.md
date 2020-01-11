@@ -1,7 +1,7 @@
 # Varying N
 ## A simple experiment varying method parameters
 
-A natural question is if we can obtain better sample efficiency with our methods by simply changing our method parameters. Using our most sample efficienty epsilon decay multipliers, we vary n in nstepsarsa and planning steps (called n for simplicity) in dynasarsa.
+Can obtain better sample efficiency with our methods by simply changing our method parameters? Using our most sample efficienty epsilon decay multipliers, we vary n in nstepsarsa and planning steps (called n for simplicity) in dynasarsa.
 
 
 
