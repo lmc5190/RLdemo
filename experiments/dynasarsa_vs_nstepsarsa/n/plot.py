@@ -90,8 +90,8 @@ def plot_stderror_runsolved_vs_n(df):
     return None
 
 
-metric= 'solution_episode'
-legend_loc= 'center' 
+metric= 'nrun_solved'
+legend_loc= 'center right' 
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
 figurefile_header= "plots/ncompare_" 
@@ -107,6 +107,6 @@ df = pd.read_csv(data_file)
 df.columns = col_names
 
 #choose appropriate function, comment out others
-#plot_nrunsolved_vs_n(df)
+plot_nrunsolved_vs_n(df)
 #plot_solutionepisode_vs_n(df)
-plot_stderror_runsolved_vs_n(df)
+#plot_stderror_runsolved_vs_n(df)
