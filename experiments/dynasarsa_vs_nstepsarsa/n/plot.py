@@ -95,7 +95,7 @@ legend_loc= 'center right'
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
 figurefile_header= "plots/ncompare_" 
-figure_file= figurefile_header + "stderror_" + metric + ".png"
+figure_file= figurefile_header + metric + ".png"
 col_names = ['method', 'run', 'episode', 'n', 'terminal_timestep', 'G_direct_mean', 'G_direct_std', 'G_direct_n',\
             'G_indirect_mean', 'G_indirect_std', 'G_indirect_n', 'dQ_direct_mean', 'dQ_direct_std', \
             'dQ_indirect_mean', 'dQ_indirect_std', 'alpha', 'epsilon', 'solution_episode', 'decay_multiplier']
