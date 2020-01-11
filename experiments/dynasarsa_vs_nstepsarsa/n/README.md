@@ -4,8 +4,8 @@ As explained below, here are the main results.
 
 1. Varying n seemed to have no effect on sample efficiency for either algorithm
 1. However, we found a bound regions of solution stability for each algorithm
-  1. nstepsarsa (4 <= n <= 16)
-  1. dynasarsa n >= 16
+   1. nstepsarsa (4 <= n <= 16)
+   1. dynasarsa n >= 16
 1. Although I labeled each algorithm parameter n, show completely different behavior as shown in earlier result. This makes sense since dynasarsa is just further applications of one step sarsa with previous data, whereas nstep learning is delayed learning.
 
 ## A simple experiment varying method parameters
