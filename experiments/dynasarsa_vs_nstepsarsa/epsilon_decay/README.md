@@ -1,7 +1,9 @@
 # Epsilon Decay
 ## A simple experiment with decay rates
 
-In plot foundation/dQ_direct_std, we see dynasarsa peak and then have a long tail throughout the rest of the experiment.
+In plot dQ_direct_std, we see dynasarsa peak and then have a long tail throughout the rest of the experiment.
+![Image of dQdirect_std](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/foundation/plots/10step_dQ_direct_std.png)
+
 I'd like to conduct an experiment to see if we can shorten this tail by increasing the epsilon decay rate.
 
 I plan to plot solution time versus multiple decay rates. The choose the behavior below to govern the decay of epsilon, where t is equal to the episode number and Xi is the decay rate.
