@@ -1,4 +1,8 @@
 # Epsilon Decay
+## Summary of Results
+1. For solved runs, the higher the decay multiplier the higher the sample efficiency.
+1. However, the higher decay multipliers have a lower chance of solving runs. This intuitively makes sense since decreasing the exploration rate too fast will prevent the agent from appropriately exploring the state space. 
+
 ## A simple experiment with decay rates
 
 In plot dQ_direct_std, we see dynasarsa peak and then have a long tail throughout the rest of the experiment.
@@ -24,7 +28,7 @@ Given the sharper epsilon decay for dynasara, how much can we improve the sample
 
 ![Image of Xi Variation](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/plots/10step_solution_episode.png)
 
-Here we say that as the decay rate goes up, solved puzzles have much higher sample efficiency. However, no higher decay rates are acceptable for nstepsarsa (n=10).  Since dynasarsa (planning steps = 10) can handle a 4x higher eploration decay, we can confidently say that would yield a solved maze in ~35 episodes over ~105 episode solution for Xi = 1 (or a increase in sample efficieny by 3x).
+Here we say that as the decay rate goes up, solved puzzles have much higher sample efficiency. However, no higher decay rates are acceptable for nstepsarsa (n=10). Since dynasarsa (planning steps = 10) can handle a 4x higher eploration decay, we can confidently say that would yield a solved maze in ~35 episodes over ~105 episode solution for Xi = 1 (or a increase in sample efficieny by 3x).
 
 It would be interesting to test different paramters for dynasara and nstepsarsa, and see if this sensitivity remains.
 
