@@ -1,3 +1,4 @@
 experiments/dynasarsa_vs_nstepsarsa/foundation/data/*
 experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/data/*
 experiments/dynasarsa_vs_nstepsarsa/n/data/*
+experiments/dynasarsa_vs_nstepsarsa/alpha_decay/data/*

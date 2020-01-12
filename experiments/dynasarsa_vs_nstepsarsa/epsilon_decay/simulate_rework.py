@@ -252,11 +252,11 @@ def select_action(state, epsilon):
 
 
 def get_epsilon(t):
-    return max(min_epsilon, min(0.8, 1.0 - math.log10((t+1)*decay_factor)))
+    return max(min_epsilon, min(0.8, 1.0 - math.log10((t+1)*decay_factor_epsilon)))
 
 
 def get_alpha(t):
-    return max(min_alpha, min(0.8, 1.0 - math.log10((t+1)*decay_factor)))
+    return max(min_alpha, min(0.8, 1.0 - math.log10((t+1)*decay_factor_alpha)))
 
 def get_gamma():
     return 0.99
@@ -325,7 +325,8 @@ if __name__ == "__main__":
     outfile = '../experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/data/neq10.csv'
     
     for decay_multiplier in decay_multipliers:
-        decay_factor = decay_multiplier*10.0/np.prod(n_states_tuple, dtype=float)
+        decay_factor_epsilon = decay_multiplier*10.0/np.prod(n_states_tuple, dtype=float)
+        decay_factor_alpha = 10.0/np.prod(n_states_tuple, dtype=float)
         run=1
         for i in range(30):
             dynasarsa(planning_steps=10, run=run)
