@@ -2,7 +2,7 @@
 ## Summary of Results
 1. For solved runs, the higher the decay multiplier the higher the sample efficiency for dynasarsa, nstepsarsa had a minimum.
 1. However, the higher decay multipliers have a lower chance of solving runs. This intuitively makes sense since decreasing the exploration rate too fast will prevent the agent from appropriately exploring the state space.
-1. For this experiment, the highest decay rates where maze is solved in every run is:
+1. For this experiment, the most stable decay rates where maze is solved in every run is:
    1. Xi = 32 for dynasarsa  (n=10)
    1. Xi = 4 for nstepsarsa (n=10)
 
