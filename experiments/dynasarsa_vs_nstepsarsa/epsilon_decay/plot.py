@@ -38,7 +38,7 @@ def plot_solutionepisode_vs_decayrate(df):
     plt.plot(x1, y1, 'k-')
     plt.fill_between(x1, y1-error1, y1+error1)
     #plt.plot(x2, y2, color='yellow', 'k--')
-    plt.plot(x2, y2, 'y--')
+    plt.plot(x2, y2, 'r--')
     plt.fill_between(x2, y2-error2, y2+error2)
     plt.legend(['dynasarsa', 'nstepsarsa'], loc=legend_loc)
     #plt.xlim(0,75)
@@ -69,7 +69,7 @@ def plot_nrunsolved_vs_decayrate(df):
     return None
 
 metric= 'nrun_solved'
-legend_loc= 'upper right' 
+legend_loc= 'center right' 
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
 figurefile_header= "plots/10step_" 

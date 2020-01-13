@@ -320,7 +320,8 @@ if __name__ == "__main__":
     env_model = []
 
     #defining experiment values
-    decay_multipliers = [0.25, 0.5, 1.0, 2.0, 4.0, 8.0] 
+    #decay_multipliers = [0.25, 0.5, 1.0, 2.0, 4.0, 8.0]
+    decay_multipliers = [16.0, 32.0, 64.0]  
     #defining outputfile
     outfile = '../experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/data/neq10.csv'
     
