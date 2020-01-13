@@ -25,7 +25,7 @@ I varied Xi and observe how many runs of the 10 by 10 maze are solved by dynasar
 
 ![Image of Xi Variation](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/plots/10step_nrun_solved.png)
 
-Notice that dynasarsa (planning steps = 10) could handle a 4x stronger decay rate than the baseline and still solve all 30 runs. Nstepsarsa (n=10) could more than 1x the baseline value (Xi = 1) yielding multiple unsolved runs for Xi > 1.
+Notice that dynasarsa (planning steps = 10) could handle all tried decay rates as it solved all 30 runs. Nstepsarsa (n=10) could more than 4x-8x the baseline value (Xi = 8) yielding multiple unsolved runs for Xi > 8.
 
 Given the sharper epsilon decay for dynasara, how much can we improve the sample efficiency? Below, I plot the solution episode number averaged over 30 runs (notice that standard error is so small, it does not even render on the graph) for each method given different epsilon decay rates. Not that any runs that did not solve the maze were omitted from the average.
 
