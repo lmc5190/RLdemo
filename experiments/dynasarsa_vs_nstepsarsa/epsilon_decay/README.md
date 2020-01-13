@@ -5,6 +5,10 @@
 1. For this experiment, the most stable decay rates where maze is solved in every run is:
    1. Xi = 32 for dynasarsa  (n=10)
    1. Xi = 4 for nstepsarsa (n=10)
+## Experimental values
+1. tried Xi = [0.25,0.5.,1.0,2.0,8.0,16.0,32.0,64.0]
+1. n=10 for both algorithms
+1. Xi for alpha = 1
 
 ## A simple experiment with decay rates
 
@@ -31,7 +35,7 @@ Given the sharper epsilon decay for dynasara, how much can we improve the sample
 
 ![Image of Xi Variation](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/plots/10step_solution_episode.png)
 
-Here we say that as the decay rate goes up, solved puzzles have much higher sample efficiency. However, no higher decay rates are acceptable for nstepsarsa (n=10). Since dynasarsa (planning steps = 10) can handle a 4x higher eploration decay, we can confidently say that would yield a solved maze in ~35 episodes over ~105 episode solution for Xi = 1 (or a increase in sample efficieny by 3x).
+Here we say that as the decay rate goes up, solved puzzles have much higher sample efficiency for dynasarsa, but there is a minimum for nstepsarsa.
 
 It would be interesting to test different paramters for dynasara and nstepsarsa, and see if this sensitivity remains.
 
