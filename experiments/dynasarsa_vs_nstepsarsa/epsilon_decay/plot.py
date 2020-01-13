@@ -68,8 +68,8 @@ def plot_nrunsolved_vs_decayrate(df):
     plt.show()
     return None
 
-metric= 'nrun_solved'
-legend_loc= 'center right' 
+metric= 'solution_episode'
+legend_loc= 'upper right' 
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
 figurefile_header= "plots/10step_" 
@@ -85,5 +85,5 @@ df = pd.read_csv(data_file)
 df.columns = col_names
 
 #choose appropriate function, comment out others
-plot_nrunsolved_vs_decayrate(df)
-#plot_solutionepisode_vs_decayrate(df)
+#plot_nrunsolved_vs_decayrate(df)
+plot_solutionepisode_vs_decayrate(df)
