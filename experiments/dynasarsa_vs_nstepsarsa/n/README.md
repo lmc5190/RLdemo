@@ -7,7 +7,7 @@ As explained below, here are the main results.
    1. nstepsarsa: 4 <= n <= 8. This bounded region makes sense since this experiment was run for the highest decay rate that showed solution stability Xi = 4. For larger n, the exploration decreases too quickly before updates can even be applied to the value function, since there is a n timestep delay in value function updates.
 1. Considering sample efficiency, solution stablility, and algorithm runtime, the best solutions for n are
    1. nstepsarsa: minimum stable n = 4
-   2. dynasarsa: minimum stable n = 32
+   2. dynasarsa: minimum stable n = 16
 1. Although I labeled each algorithm parameter n, n does not mean the same thing for each algorithm. They show completely different behavior in the bounded regions of solution stability. This makes sense since dynasarsa is just further applications of one step sarsa with previous data, whereas nstep learning is delayed learning. Furthermore, for dyanasarsa, there will be n indirect learning updates per timestep, wheras for nstepsarsa, there will be the same number of updates as 1 step sarsa, only the updates are delayed by n steps. 
 
 ## Experiment Parameters
