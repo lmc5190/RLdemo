@@ -28,9 +28,4 @@ Next, we vary the solution episode versus the algorithm parameter and find an ex
 
 The solution episode is flat across the model parameters (dynasrasa = 33, nstepsarsa = 117). This is very different from what we saw in the case of the epsilon decay rate. Perhaps, the epsilon decay rate has an overriding influence on sample efficiency compared to the model parameter. We also must consider a few other things before concluding this: the alpha decay, the max/min epsilon values and the max/min alpha values.
 
-Note in the above plot, the error region is so small you cannot see it (about 0.1 - 0.3 of an episode). I have plotted the std errors below for proof. From this plot, we notice that dynasarsa is a bit more consistent.
-
-![Image of stderrors_insltnep vs n](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/n/plots/ncompare_stderror_solution_episode.png)
-
-
 Thanks to the developers at CodeCogs https://www.codecogs.com/latex/eqneditor.php for helping me render equations. If you use their service, please acknowledge and support them!
