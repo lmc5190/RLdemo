@@ -320,20 +320,28 @@ if __name__ == "__main__":
     env_model = []
 
     #defining experiment values
-    decay_multipliers = [0.25, 0.5, 1.0, 2.0, 4.0, 8.0] 
+    decay_multipliers = [0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
+
+    #constants
+    decaymultiplier_epsilon_dynasarsa=32
+    decaymultiplier_epsilon_nstepsarsa=4
+    n_dynasarsa=16
+    n_nstepsarsa=4
+
     #defining outputfile
-    outfile = '../experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/data/neq10.csv'
+    outfile = '../experiments/dynasarsa_vs_nstepsarsa/alpha_decay/data/opt_epsdecay_n.csv'
     
     for decay_multiplier in decay_multipliers:
-        decay_factor_epsilon = decay_multiplier*10.0/np.prod(n_states_tuple, dtype=float)
-        decay_factor_alpha = 10.0/np.prod(n_states_tuple, dtype=float)
+        decay_factor_epsilon = decaymultiplier_epsilon_dynasarsa * 10.0/np.prod(n_states_tuple, dtype=float)
+        decay_factor_alpha =  decay_multiplier*10.0/np.prod(n_states_tuple, dtype=float)
         run=1
         for i in range(30):
-            dynasarsa(planning_steps=10, run=run)
+            dynasarsa(planning_steps=n_dynasarsa, run=run)
             q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
             env_model = []
             run=run+1
 
+        decay_factor_alpha = decaymultiplier_epsilon_nstepsarsa * 10.0/np.prod(n_states_tuple, dtype=float)
         run=1
         for i in range(30):
             nstepsarsa(n=n_nstepsarsa, run=run)
