@@ -4,7 +4,7 @@ As explained below, here are the main results.
 
 1. Varying n seemed to have no effect on sample efficiency for both algorithms
 1. However, we found bounded regions of solution stability for each algorithm
-   1. nstepsarsa: 4 <= n <= 16. This bounded region makes sense since this experiment was run for the highest decay rate that showed solution stability Xi = 1. For larger n, the exploration decreases too quickly before updates can even be applied to the value function, since there is a n timestep delay in value function updates.
+   1. nstepsarsa: 4 <= n <= 8. This bounded region makes sense since this experiment was run for the highest decay rate that showed solution stability Xi = 1. For larger n, the exploration decreases too quickly before updates can even be applied to the value function, since there is a n timestep delay in value function updates.
    1. dynasarsa:  n>= 16
 1. Even though sample efficiency doesn't change with respect to n, these results show that algorithm runtime can be shortened by picking the smallest values of n that show solution stability.
    1. nstepsarsa: minimum stable n = 4
