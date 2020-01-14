@@ -90,8 +90,8 @@ def plot_stderror_runsolved_vs_n(df):
     return None
 
 
-metric= 'nrun_solved'
-legend_loc= 'center right' 
+metric= 'solution_episode'
+legend_loc= 'upper right' 
 #best        upper right        upper left        lower left        lower right        right
 #center left        center right        lower center        upper center        center
 figurefile_header= "plots/ncompare_" 
@@ -99,7 +99,7 @@ figure_file= figurefile_header + metric + ".png"
 col_names = ['method', 'run', 'episode', 'n', 'terminal_timestep', 'G_direct_mean', 'G_direct_std', 'G_direct_n',\
             'G_indirect_mean', 'G_indirect_std', 'G_indirect_n', 'dQ_direct_mean', 'dQ_direct_std', \
             'dQ_indirect_mean', 'dQ_indirect_std', 'alpha', 'epsilon', 'solution_episode', 'decay_multiplier']
-data_file="data/test.csv"
+data_file="data/Xi_e32_a4.csv"
 method1='dynasarsa'
 method2='nstepsarsa'
 
@@ -107,6 +107,6 @@ df = pd.read_csv(data_file)
 df.columns = col_names
 
 #choose appropriate function, comment out others
-plot_nrunsolved_vs_n(df)
-#plot_solutionepisode_vs_n(df)
+#plot_nrunsolved_vs_n(df)
+plot_solutionepisode_vs_n(df)
 #plot_stderror_runsolved_vs_n(df)

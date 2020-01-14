@@ -320,13 +320,13 @@ if __name__ == "__main__":
     env_model = []
 
     #defining experiment values
-    decay_multiplier_dynasarsa = 4
-    decay_multiplier_nstepsarsa = 1
+    decay_multiplier_dynasarsa = 32
+    decay_multiplier_nstepsarsa = 4
     dynasarsa_planningsteps = [1,2,4,8,10,16,32]
     nstepsarsa_n = [2,4,8,10,16,32]
     
     #defining outputfile
-    outfile = '../experiments/dynasarsa_vs_nstepsarsa/n/data/test.csv'
+    outfile = '../experiments/dynasarsa_vs_nstepsarsa/n/data/Xi_e32_a4.csv'
     
     run=1
     decay_multiplier =  decay_multiplier_dynasarsa 
