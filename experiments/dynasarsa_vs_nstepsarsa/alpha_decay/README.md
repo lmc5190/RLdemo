@@ -10,7 +10,7 @@ I'm going to plot solution episode and number of runs solved for alpha decay val
 
 Alpha decay are defined by the same eqn as [epsilon decay](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/README.md) 
 
-![equation](https://latex.codecogs.com/gif.latex?\alpha(t)&space;=&space;max(\alpha_{min}&space;,&space;min(1&space;-&space;\log_{10}\alpha&space;t)))
+![equation](https://latex.codecogs.com/gif.latex?\alpha(t)&space;=&space;max(\alpha_{min}&space;,&space;min(1&space;-&space;\log_{10}\xi&space;t)))
 
 The hyperparameters are set at optimized values for n and Xi_epsilon (see those experiments)
 * n = 4 for nstepsarsa, n = 16 planning steps for dynasarsa
