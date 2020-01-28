@@ -3,7 +3,6 @@ import numpy as np
 import math
 import random
 import time
-import matplotlib.pyplot as plt
 import pandas as pd
 import csv
 from collections import deque
@@ -16,13 +15,15 @@ def dynasarsa(planning_steps, run=1):
     # Instantiating the learning related parameters
     alpha = get_alpha(0)
     epsilon = get_epsilon(0)
-    discount = 0.99
+    gamma = get_gamma()
     num_streaks = 0
+    solution_episode = -1
 
     # Render tha maze
-    env.render()
+    if render_maze:
+        env.render()
 
-    for episode in range(episodes):
+    for episode in range(max_episodes):
 
         # Reset the environment
         state = env.reset()
@@ -55,7 +56,7 @@ def dynasarsa(planning_steps, run=1):
 
             # Update the Q and env_model based on the result
             q_sa = q_table[state + (select_action(state, epsilon),)]
-            G_direct = reward + discount * q_sa
+            G_direct = reward + gamma * q_sa
             dQ_direct = G_direct - q_table[state_0 + (action,)]
             q_table[state_0 + (action,)] += alpha * dQ_direct
             env_model.append([state_0, action, reward, state])
@@ -66,7 +67,7 @@ def dynasarsa(planning_steps, run=1):
             for n in range(planning_steps):
                 s,a,r,sp = random.choice(env_model)
                 q_sa = q_table[sp + (select_action(sp, epsilon),)]
-                G_indirect = r + discount * q_sa
+                G_indirect = r + gamma * q_sa
                 dQ_indirect = G_indirect - q_table[s + (a,)]
                 q_table[s + (a,)] += alpha * dQ_indirect
                 G_indirect_vector.append(G_indirect) #metric tracking
@@ -83,32 +84,33 @@ def dynasarsa(planning_steps, run=1):
                 break
 
             if done:
-                T=t
-                print("Episode %d finished after %f time steps with total reward = %f (streak %d)."
-                      % (episode, t, total_reward, num_streaks))
-                #print results
-                print(episode, t)
-                with open('../experiments/dynasarsa_vs_nstepsarsa/data/latest.csv', 'a+', newline='') as csvfile:
+                T=t+1 #since agent is at t+1 while timeloop is at t
+                if T == optimal_steps:
+                    num_streaks = num_streaks + 1
+
+                else:
+                    num_streaks = 0
+
+                if num_streaks == solution_streaks:
+                    solution_episode = episode
+
+
+                print("Episode %d finished after %d time steps with total reward = %f and on a %d game winning streak"
+                      % (episode, T, total_reward, num_streaks))
+
+                with open(outfile, 'a+', newline='') as csvfile:
                     writer = csv.writer(csvfile, delimiter=',',
                                             quotechar='\"', quoting=csv.QUOTE_MINIMAL)
                     writer.writerow(['dynasarsa', run, episode, T, np.mean(G_direct_vector), np.std(G_direct_vector), len(G_direct_vector), \
                                     np.mean(G_indirect_vector), np.std(G_indirect_vector), len(G_indirect_vector), \
                                     np.mean(dQ_direct_vector), np.std(dQ_direct_vector),\
-                                    np.mean(dQ_indirect_vector), np.std(dQ_indirect_vector), alpha, epsilon ])
+                                    np.mean(dQ_indirect_vector), np.std(dQ_indirect_vector), alpha, epsilon, solution_episode, decay_multiplier])
 
-                if t <= t_solved:
-                    num_streaks += 1
-                else:
-                    num_streaks = 0
                 break
 
             elif t >= max_timesteps - 1:
                 print("Episode %d timed out at %d with total reward = %f."
                       % (episode, t, total_reward))
-
-        # It's considered done when it's solved over 120 times consecutively
-        if num_streaks > terminal_streak:
-            break
 
         # Update parameters
         epsilon = get_epsilon(episode)
@@ -119,13 +121,15 @@ def nstepsarsa(n, run=1):
     # Instantiating the learning related parameters
     alpha = get_alpha(0)
     epsilon = get_epsilon(0)
-    discount = 0.99
+    gamma = get_gamma()
     num_streaks = 0
+    solution_episode = -1
 
     # Render tha maze
-    env.render()
+    if render_maze:
+        env.render()
 
-    for episode in range(episodes):
+    for episode in range(max_episodes):
 
         # Reset the environment, will not start at Terminal State
         state = env.reset()
@@ -184,10 +188,10 @@ def nstepsarsa(n, run=1):
                 s,a = S[0], A[0]
 
                 #build appropriately size gamma vector, esp needed when episode terminates with t < n
-                gamma_vector = [discount**(i+1) for i in range(len(R) - 1)]
+                gamma_vector = [gamma**(i+1) for i in range(len(R) - 1)]
 
                 if(tau+n < T):
-                    G = R.popleft() + np.dot(gamma_vector,R) + discount**(n-1)*q_table[S[len(S)-2] + (A[len(A)-2],)]
+                    G = R.popleft() + np.dot(gamma_vector,R) + gamma**(n-1)*q_table[S[len(S)-2] + (A[len(A)-2],)]
                 elif(tau < T- 1):
                     G = R.popleft() + np.dot(gamma_vector,R)
                 else:
@@ -196,42 +200,45 @@ def nstepsarsa(n, run=1):
                 q_table[s + (a,)] += alpha*dQ
                 G_vector.append(G) #metric tracking
                 dQ_vector.append(dQ)
-            #step t forward one step
-            t=t+1
 
             # Render tha maze
             if render_maze:
                 env.render()
 
             if env.is_game_over():
+                print("game over break")
                 break
 
-            if t >= T+n-1:
-                print("Episode %d finished after %f time steps with total reward = %f (streak %d)."
-                      % (episode, t, total_reward, num_streaks))
+            #if t >= T+n-1:
+            if tau == T-1:
+                if T == optimal_steps:
+                    num_streaks = num_streaks + 1
+                else:
+                    num_streaks = 0
+
+                if num_streaks == solution_streaks:
+                    solution_episode = episode
+
+                print("Episode %d finished after %d time steps with total reward = %f and on a %d game winning streak"
+                      % (episode, T, total_reward, num_streaks))
 
                 
-                with open('../experiments/dynasarsa_vs_nstepsarsa/data/latest.csv', 'a+', newline='') as csvfile:
+                with open(outfile, 'a+', newline='') as csvfile:
                     writer = csv.writer(csvfile, delimiter=',',
                                             quotechar='\"', quoting=csv.QUOTE_MINIMAL)
                     writer.writerow(['nstepsarsa', run, episode, T, np.mean(G_vector), np.std(G_vector), len(G_vector), \
-                                    0,0,0, np.mean(dQ_vector), np.std(dQ_vector), 0, 0, alpha, epsilon])
-
-                if t <= t_solved:
-                    num_streaks += 1
-                else:
-                    num_streaks = 0
+                                    0,0,0, np.mean(dQ_vector), np.std(dQ_vector), 0, 0, alpha, epsilon, solution_episode, decay_multiplier])
                 break
-
             elif t >= T - 1:
                 pass
-        # It's considered done when it's solved over 120 times consecutively
-        if num_streaks > terminal_streak:
-            break
+
+            #step t forward one step
+            t=t+1
 
         # Update parameters
         epsilon = get_epsilon(episode)
         alpha = get_alpha(episode)
+        print(solution_episode)
 
 
 def select_action(state, epsilon):
@@ -245,12 +252,14 @@ def select_action(state, epsilon):
 
 
 def get_epsilon(t):
-    return max(min_epsilon, min(0.8, 1.0 - math.log10((t+1)/decay_factor)))
+    return max(min_epsilon, min(0.8, 1.0 - math.log10((t+1)*decay_factor_epsilon)))
 
 
 def get_alpha(t):
-    return max(min_alpha, min(0.8, 1.0 - math.log10((t+1)/decay_factor)))
+    return max(min_alpha, min(0.8, 1.0 - math.log10((t+1)*decay_factor_alpha)))
 
+def get_gamma():
+    return 0.99
 
 def state_to_bucket(state):
     bucket_indice = []
@@ -290,21 +299,19 @@ if __name__ == "__main__":
     '''
     Learning related constants
     '''
-    min_epsilon = 0.001
-    min_alpha = 0.2
-    decay_factor = np.prod(n_states_tuple, dtype=float) / 10.0
+    min_epsilon = 0.0
+    min_alpha = 0.0
+    #decay_factor = 10.0/np.prod(n_states_tuple, dtype=float)
     planning_steps = 10
+    n_nstepsarsa = 10
 
     '''
     Defining the simulation related constants
     '''
-    episodes = 50000
-    T = np.prod(n_states_tuple, dtype=int) * 100
-    terminal_streak = 100
-    t_solved = np.prod(n_states_tuple, dtype=int)
-    DEBUG_MODE = 0
-    render_maze = True
-    enable_recording = False
+    max_episodes = 600
+    render_maze = False
+    optimal_steps = 62
+    solution_streaks = 10 #number of streaks when maze is considered solved
 
     '''
     Creating a Q-Table for each state-action pair and environment model table
@@ -312,14 +319,24 @@ if __name__ == "__main__":
     q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
     env_model = []
 
-    run=1
-    for i in range(5):
-        dynasarsa(planning_steps=10, run=run)
-        q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
-        env_model = []
-        run=run+1
-    run=1
-    for i in range(5):
-        nstepsarsa(n=10, run=run)
-        q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
-        run=run+1
+    #defining experiment values
+    #decay_multipliers = [0.25, 0.5, 1.0, 2.0, 4.0, 8.0]
+    decay_multipliers = [16.0, 32.0, 64.0]  
+    #defining outputfile
+    outfile = '../experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/data/neq10.csv'
+    
+    for decay_multiplier in decay_multipliers:
+        decay_factor_epsilon = decay_multiplier*10.0/np.prod(n_states_tuple, dtype=float)
+        decay_factor_alpha = 10.0/np.prod(n_states_tuple, dtype=float)
+        run=1
+        for i in range(30):
+            dynasarsa(planning_steps=10, run=run)
+            q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
+            env_model = []
+            run=run+1
+
+        run=1
+        for i in range(30):
+            nstepsarsa(n=n_nstepsarsa, run=run)
+            q_table = np.zeros(n_states_tuple + (n_actions,), dtype=float)
+            run=run+1
