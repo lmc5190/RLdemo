@@ -11,8 +11,8 @@ I'm going to plot solution episode and number of runs solved for alpha decay val
 Alpha decay are defined by the same eqn as [epsilon decay](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/README.md) 
 
 The hyperparameters are set at optimized values for n and Xi_epsilon (see those experiments)
-a. n = 4 for nstepsarsa, n = 16 planning steps for dynasarsa
-a. Xi for epsilon is 4 for nstepsarsa, and 32 for dynasrasa
+* n = 4 for nstepsarsa, n = 16 planning steps for dynasarsa
+* Xi for epsilon is 4 for nstepsarsa, and 32 for dynasrasa
 
 In plot dQ_direct_std, we see dynasarsa peak and then have a long tail throughout the rest of the experiment.
 ![Image of dQdirect_std](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/foundation/plots/10step_dQ_direct_std.png)
