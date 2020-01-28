@@ -9,6 +9,7 @@
 I'm going to plot solution episode and number of runs solved for alpha decay values (0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0) for 10by10 gym maze experiement averaged over 30 runs. 
 
 Alpha decay are defined by the same eqn as [epsilon decay](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/README.md) 
+![equation](https://latex.codecogs.com/gif.latex?\alpha(t)&space;=&space;max(\alpha_{min}&space;,&space;min(1&space;-&space;\log_{10}\alpha&space;t))))
 
 The hyperparameters are set at optimized values for n and Xi_epsilon (see those experiments)
 * n = 4 for nstepsarsa, n = 16 planning steps for dynasarsa
@@ -20,8 +21,6 @@ In plot dQ_direct_std, we see dynasarsa peak and then have a long tail throughou
 I'd like to conduct an experiment to see if we can shorten this tail by increasing the epsilon decay rate.
 
 I plan to plot solution time versus multiple decay rates. The choose the behavior below to govern the decay of epsilon, where t is equal to the episode number and Xi is the decay rate.
-
-![equation](https://latex.codecogs.com/gif.latex?\epsilon(t)&space;=&space;\max&space;(&space;\epsilon_{min},&space;\min(\epsilon_{max},&space;1-\log_{10}\xi&space;t)&space;))
 
 This behavior is shown graphically looks like the plot shown for epsilon versus episode number
 
