@@ -1,12 +1,11 @@
 # Alpha Decay
 ## Summary of Results
 1. We succeeded in finding optimal value for nstep sarsa, but found one for dynasarsa.
-1. Result 
-1. Result
+1. Xi = 4 for alpha decay in dynasarsa was min value.
 
 ## A simple experiment with decay rates
 
-I'm going to plot solution episode and number of runs solved for alpha decay values (0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0) for 10by10 gym maze experiement averaged over 30 runs. 
+I'm going to plot solution episode and number of runs solved for alpha decay values (0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0) for 10by10 gym maze environment averaged over 30 runs. 
 
 Alpha decay are defined by the same eqn as [epsilon decay](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/README.md) 
 
@@ -21,25 +20,10 @@ The hyperparameters are set at optimized values for n and Xi_epsilon (see those 
 The plot shows that no values solved nstepsarsa, while several values 0.25 thru 2 solve dynasarsa.
 
 
-I plan to plot solution time versus multiple decay rates. The choose the behavior below to govern the decay of epsilon, where t is equal to the episode number and Xi is the decay rate.
 
-This behavior is shown graphically looks like the plot shown for epsilon versus episode number
+![Image of alpha decay fix n and eps decay](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/alpha_decay/plots/opt_epsdecay_n.csv_solution_episode.png)
 
-![Image of Epsilon](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/foundation/plots/10step_epsilon.png)
-
-I varied Xi and observe how many runs of the 10 by 10 maze are solved by dynasarsa (planning steps = 10) and nstepsarsa (n=10).
-
-![Image of Xi Variation](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/plots/10step_nrun_solved.png)
-
-Notice that dynasarsa (planning steps = 10) could handle a 4x stronger decay rate than the baseline and still solve all 30 runs. Nstepsarsa (n=10) could more than 1x the baseline value (Xi = 1) yielding multiple unsolved runs for Xi > 1.
-
-Given the sharper epsilon decay for dynasara, how much can we improve the sample efficiency? Below, I plot the solution episode number averaged over 30 runs (notice that standard error is so small, it does not even render on the graph) for each method given different epsilon decay rates. Not that any runs that did not solve the maze were omitted from the average.
-
-![Image of Xi Variation](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/plots/10step_solution_episode.png)
-
-Here we say that as the decay rate goes up, solved puzzles have much higher sample efficiency. However, no higher decay rates are acceptable for nstepsarsa (n=10). Since dynasarsa (planning steps = 10) can handle a 4x higher eploration decay, we can confidently say that would yield a solved maze in ~35 episodes over ~105 episode solution for Xi = 1 (or a increase in sample efficieny by 3x).
-
-It would be interesting to test different paramters for dynasara and nstepsarsa, and see if this sensitivity remains.
+Since nstepsarsa didn't solve, we only care about dynasarsa. Dynasarsa shows minimum success number at 14 episodes for Xi = 4.
 
 
 Thanks to the developers at CodeCogs https://www.codecogs.com/latex/eqneditor.php for helping me render equations. If you use their service, please acknowledge and support them!
