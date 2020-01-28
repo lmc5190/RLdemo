@@ -1,12 +1,14 @@
-# Epsilon Decay
+# Alpha Decay
 ## Summary of Results
-1. For solved runs, the higher the decay multiplier the higher the sample efficiency.
-1. However, the higher decay multipliers have a lower chance of solving runs. This intuitively makes sense since decreasing the exploration rate too fast will prevent the agent from appropriately exploring the state space.
-1. For this experiment, the highest decay rates where maze is solved in every run is:
-   1. Xi = 4 for dynasarsa  (n=10)
-   1. Xi = 1 for nstepsarsa (n=10)
+1. We succeeded in finding optimal value for nstep sarsa, but found one for dynasarsa.
+1. Result 
+1. Result
 
 ## A simple experiment with decay rates
+
+I'm going to plot solution episode and number of runs solved for alpha decay values (0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0) for 10by10 gym maze experiement averaged over 30 runs. 
+
+Alpha decay are defined by the same eqn as [epsilon decay](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/epsilon_decay/README.md) 
 
 In plot dQ_direct_std, we see dynasarsa peak and then have a long tail throughout the rest of the experiment.
 ![Image of dQdirect_std](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/foundation/plots/10step_dQ_direct_std.png)
