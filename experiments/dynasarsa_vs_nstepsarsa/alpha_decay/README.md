@@ -16,10 +16,10 @@ The hyperparameters are set at optimized values for n and Xi_epsilon (see those 
 * n = 4 for nstepsarsa, n = 16 planning steps for dynasarsa
 * Xi for epsilon is 4 for nstepsarsa, and 32 for dynasrasa
 
-In plot dQ_direct_std, we see dynasarsa peak and then have a long tail throughout the rest of the experiment.
-![Image of dQdirect_std](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/foundation/plots/10step_dQ_direct_std.png)
+![Image of nrunsolved](https://github.com/lmc5190/RLdemo/blob/master/experiments/dynasarsa_vs_nstepsarsa/alpha_decay/plots/opt_epsdecay_n.csv_nrun_solved.png)
 
-I'd like to conduct an experiment to see if we can shorten this tail by increasing the epsilon decay rate.
+The plot shows that no values solved nstepsarsa, while several values 0.25 thru 2 solve dynasarsa.
+
 
 I plan to plot solution time versus multiple decay rates. The choose the behavior below to govern the decay of epsilon, where t is equal to the episode number and Xi is the decay rate.
 
