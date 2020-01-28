@@ -7,5 +7,5 @@ Please see the READMEs in the file directories to see more details on each param
 
 ## Results
 1. We did not get an optimal result for nstepsarsa.
-1. Dynasarsa had optimal performance, solving the maze  with following parameters:
+1. Dynasarsa had optimal performance, solving the maze in 14 episodes (had optimal policy by end of episode 3) with following parameters:
   * planning steps = 16, Xi = 4 for alpha decay, Xi = 32 for epsilon decay
