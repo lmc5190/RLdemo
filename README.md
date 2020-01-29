@@ -96,7 +96,11 @@ You should shortly see Minecraft rendering in your VNC Viewer :)
 
 # Demo Environment
 ## gym-maze
-To setup, run the following commands
+First make sure you have cloned the gym-maze directory (especially if you just git pulled this directory)
+
+`git clone https://github.com/MattChanTK/gym-maze.git`
+
+Then, run the following commands
 ```
 cd gym-maze
 python setup.py install
